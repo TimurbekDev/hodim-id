@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+/* Light mode (default) */
+:root {
+  --font-google-sans: 'Google Sans', sans-serif;
+  /* Labels */
+  --color-label-primary: #14191a;
+  --color-label-secondary: rgba(20, 25, 26, 0.64);
+  --color-label-tertiary: rgba(20, 25, 26, 0.32);
+  --color-label-disable: rgba(20, 25, 26, 0.2);
+  --color-label-opposite: #ffffff;
+
+  /* Backgrounds */
+  --color-bg-underlayer: #f1f3f6;
+  --color-bg-base: #ffffff;
+  --color-bg-elevation-1: #ffffff;
+  --color-bg-elevation-1-alt: #f1f3f6;
+  --color-bg-elevation-2: #ffffff;
+  --color-bg-elevation-2-alt: #ebecee;
+  --color-bg-active-tab: #ffffff;
+
+  /* Accent */
+  --color-accent-primary: #14191A;
+
+  /* Custom */
+  --color-mint-500: #6c6c71;
+}
+
+/* Dark mode */
+.dark {
+  --font-google-sans: 'Google Sans', sans-serif;
+  /* Labels */
+  --color-label-primary: #ffffff;
+  --color-label-secondary: rgba(255, 255, 255, 0.64);
+  --color-label-tertiary: rgba(255, 255, 255, 0.32);
+  --color-label-disable: rgba(255, 255, 255, 0.16);
+  --color-label-opposite: #14191a;
+
+  /* Backgrounds */
+  --color-bg-underlayer: #000000;
+  --color-bg-base: #0e0e10;
+  --color-bg-elevation-1: #18181a;
+  --color-bg-elevation-1-alt: #18181a;
+  --color-bg-elevation-2: #27272b;
+  --color-bg-elevation-2-alt: #27272b;
+  --color-bg-active-tab: #6c6c71;
+
+  /* Accent */
+  --color-accent-primary: #ffffff;
+
+  /* Custom */
+  --color-mint-500: #6c6c71;
+}
+
+body {
+  background-color: var(--color-bg-base);
+  color: var(--color-label-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Tailwind @theme block */
+@theme {
+  --color-label-primary: var(--color-label-primary);
+  --color-label-secondary: var(--color-label-secondary);
+  --color-label-tertiary: var(--color-label-tertiary);
+  --color-label-disable: var(--color-label-disable);
+  --color-label-opposite: var(--color-label-opposite);
+
+  --color-bg-underlayer: var(--color-bg-underlayer);
+  --color-bg-base: var(--color-bg-base);
+  --color-bg-elevation-1: var(--color-bg-elevation-1);
+  --color-bg-elevation-1-alt: var(--color-bg-elevation-1-alt);
+  --color-bg-elevation-2: var(--color-bg-elevation-2);
+  --color-bg-elevation-2-alt: var(--color-bg-elevation-2-alt);
+  --color-bg-active-tab: var(--color-bg-active-tab);
+
+  --color-accent-primary: var(--color-accent-primary);
+  --color-mint-500: var(--color-mint-500);
+}
