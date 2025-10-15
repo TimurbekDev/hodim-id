@@ -31,7 +31,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <AntButton
-        ref={ref as any}
+        ref={ref as React.Ref<HTMLButtonElement>}
         htmlType={htmlType}
         loading={loading}
         className={`!rounded-full h-14 px-6 ${variantClass} ${className}`}

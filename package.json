@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
   "lint": "eslint .",
   "preview": "vite preview",
-  "prepare": "husky install"
+  "prepare": "husky install",
+  "typescript": "tsc --noEmit"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.14",

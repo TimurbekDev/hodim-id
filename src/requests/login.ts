@@ -3,7 +3,7 @@ import { api } from "../api";
 import type { ILoginResponse } from "../types/auth";
 
 export const login = async (userId: number) => {
-    let { data } = await api.post<ILoginResponse>(
+    const { data } = await api.post<ILoginResponse>(
         `/auth/Login-hamroh?hamrohId=${userId}`,
         {},
         {
