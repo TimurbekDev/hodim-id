@@ -24,20 +24,20 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const buttonStyle =
+    const variantClass =
       variant === "primary"
-        ? ""
-        : "";
+        ? "!bg-[#121329] !text-white"
+        : "!bg-white !text-gray-800 border !border-gray-200";
 
     return (
       <AntButton
         ref={ref as any}
         htmlType={htmlType}
         loading={loading}
-        className={`!bg-accent-primary !text-label-opposite !rounded-4xl  ${buttonStyle} ${className}`}
+        className={`!rounded-full h-14 px-6 ${variantClass} ${className}`}
         {...props}
       >
-        {Icon && <span className="mr-2">{Icon}</span>}
+        {Icon && <span className="mr-3">{Icon}</span>}
         {children}
       </AntButton>
     );

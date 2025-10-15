@@ -1,27 +1,27 @@
-import { Button } from "./components/ui/Button";
-import AppProvider from "./providers";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedRoutes from "./components/common/ProtectedRoutes";
+import AppProvider from "./providers/AppProvider";
 import "./styles/index.css";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import ErrorPage from "./pages/ErrorPage";
 function App() {
 
-  return <AppProvider>
-    <div className="min-h-screen  text-label-primary p-6 transition-all">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold">
-          Tailwind + Ant Design Theme Switcher
-        </h1>
-      </div>
 
-        {/* <Button
-          className="!h-[44px] py-[8px] px-[24px] !rounded-4xl w-[292px]"
-          variant="secondary"
-          htmlType="submit"
-          loading={false}
-        >
-          Submit
-        </Button> */}
-        <Button>AAA</Button>
-    </div>
-  </AppProvider>
+  return (
+    <AppProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={<ProtectedRoutes component={<HomePage />} />}
+          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/error" element={<ErrorPage />} />
+        </Routes>
+      </BrowserRouter>
+    </AppProvider>
+  );
 }
 
 export default App;

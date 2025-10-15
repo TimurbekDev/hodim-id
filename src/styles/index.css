@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
 /* Light mode (default) */
 :root {
-  --font-google-sans: 'Google Sans', sans-serif;
+  --font-google-sans: "Google Sans", sans-serif;
   /* Labels */
   --color-label-primary: #14191a;
   --color-label-secondary: rgba(20, 25, 26, 0.64);
@@ -21,15 +21,23 @@
   --color-bg-active-tab: #ffffff;
 
   /* Accent */
-  --color-accent-primary: #14191A;
+  --color-accent-primary: #14191a;
 
-  /* Custom */
-  --color-mint-500: #6c6c71;
+  /* Fills */
+  --color-fiils-quaternary: rgba(180, 184, 204, 0.14);
+  --color-fiils-tertiary: rgba(20, 54, 97, 0.06);
+
+  /* Stroke /Separate / Border */
+  --color-stroke-non-opaque: rgba(180, 184, 204, 0.32);
+
+  /* Static */
+  --color-static-black: rgba(20, 25, 26, 1);
+  --color-static-white: rgba(255, 255, 255, 1);
 }
 
 /* Dark mode */
 .dark {
-  --font-google-sans: 'Google Sans', sans-serif;
+  --font-google-sans: "Google Sans", sans-serif;
   /* Labels */
   --color-label-primary: #ffffff;
   --color-label-secondary: rgba(255, 255, 255, 0.64);
@@ -48,15 +56,19 @@
 
   /* Accent */
   --color-accent-primary: #ffffff;
-
-  /* Custom */
-  --color-mint-500: #6c6c71;
 }
 
 body {
   background-color: var(--color-bg-base);
   color: var(--color-label-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
 }
 
 /* Tailwind @theme block */
@@ -76,5 +88,149 @@ body {
   --color-bg-active-tab: var(--color-bg-active-tab);
 
   --color-accent-primary: var(--color-accent-primary);
-  --color-mint-500: var(--color-mint-500);
+}
+
+.ant-radio-checked .ant-radio-inner {
+  background-color: rgb(21, 255, 0) !important ;
+}
+
+.home-card {
+  background: #ffffff;
+  border-radius: 24px;
+}
+
+.date-pills {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+@media (min-width: 400px) {
+  .date-pills {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+@media (min-width: 640px) {
+  .date-pills {
+    display: flex;
+    gap: 12px;
+  }
+}
+.date-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 0;
+}
+.date-pill .date-num {
+  width: clamp(32px, 10vw, 40px);
+  height: clamp(32px, 10vw, 40px);
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  color: #111827;
+}
+.date-pill.active {
+  border-color: rgba(17, 24, 39, 0.08);
+}
+.date-pill.active .date-num {
+  background: #111827;
+  color: #fff;
+}
+.date-pill .date-day {
+  font-size: 10px;
+  color: rgba(0, 0, 0, 0.45);
+  text-transform: lowercase;
+}
+.date-pill:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.6);
+  outline-offset: 2px;
+}
+
+.role-toggle {
+  display: inline-flex;
+  background: #f3f4f6;
+  padding: 4px;
+  border-radius: 9999px;
+}
+.role-toggle button {
+  border-radius: 9999px;
+  padding: 4px 24px;
+  background: transparent;
+  border: none;
+}
+.role-toggle button.active {
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(16, 24, 40, 0.06);
+}
+
+.home-cta {
+  height: 56px;
+  border-radius: 9999px;
+  background: #121329;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-weight: 500;
+}
+
+.card-inner {
+  padding: 20px;
+}
+.rounded-2xl {
+  border-radius: 16px;
+}
+
+@media (max-height: 720px), (max-width: 500px) {
+  .home-card-top {
+    padding: 12px !important;
+  }
+  .home-card-middle {
+    padding: 0 12px 12px !important;
+  }
+  .home-card-bottom {
+    padding: 12px !important;
+  }
+
+  .home-viewport {
+    width: 100vw;
+    min-height: 100svh;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  .home-card {
+    max-width: 100%;
+    width: 100%;
+    border-radius: 18px;
+  }
+  .home-card .ant-card-body {
+    padding: 0;
+  }
+
+  .date-pill .date-num {
+    width: 32px;
+    height: 32px;
+  }
+
+  .role-toggle button,
+  .home-card .role-toggle button {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .home-cta {
+    height: clamp(44px, 12vw, 48px);
+  }
+
+  .home-card-middle {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
