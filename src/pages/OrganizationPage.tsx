@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Card } from "antd";
 import { PlayCircleFilled } from "@ant-design/icons";
-import { Button, DatePills, RoleToggle } from "../components/ui";
-import Header from "../components/common/Header";
-import ScheduleCard from "../components/common/ScheduleCard";
+import { Button, DatePills, RoleToggle } from "@/components/ui";
+import Header from "@/components/common/Header";
+import ScheduleCard from "@/components/common/ScheduleCard";
 import DisciplineCard from "../components/common/DisciplineCard";
 import { useParams } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';
@@ -11,7 +11,7 @@ import { getOrganization } from "../requests/getOrganization";
 import { useAuth } from "../hooks/useAuth";
 import { usePopups } from "../store/usePopups";
 import { Popups } from "../utils/popups";
-import SelectOrganizationPopup from "../components/common/Popups/SelectOrganizationPopup";
+import SelectOrganizationPopup from "@/components/common/Popups/SelectOrganizationPopup";
 
 
 const OrganizationPage: React.FC = () => {

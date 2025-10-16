@@ -2,9 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoutes from "./components/common/ProtectedRoutes";
 import AppProvider from "./providers/AppProvider";
 import "./styles/index.css";
-import LoginPage from "./pages/LoginPage";
-import ErrorPage from "./pages/ErrorPage";
-import OrganizationPage from "./pages/OrganizationPage";
+import { ErrorPage, LoginPage, OrganizationPage } from "@/pages";
 function App() {
   return (
     <AppProvider>
