@@ -4,11 +4,11 @@ export interface IOrgaqnization {
     contact: string
     latitude: number
     longitude: number
-    organization_id: any
-    parent_view: any
-    file: any
+    organization_id: number | null
+    parent_view: unknown | null
+    file: unknown | null
     avatar: string | null
     id: number
-    childrenViews: any[]
-    organizationClientViews: any[]
+    childrenViews: (unknown | null)[]
+    organizationClientViews: (unknown | null)[]
 }

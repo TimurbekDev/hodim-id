@@ -26,7 +26,7 @@ const OrganizationPage: React.FC = () => {
         if (!orgId) {
             setActivePopup({ popup: Popups.POPUP_ORG_SELECT })
         }
-    }, []);
+    }, [orgId,setActivePopup]);
 
     const parsedOrgId = orgId ? Number(orgId) : undefined
     const organizationId = Number.isFinite(parsedOrgId) ? (parsedOrgId as number) : undefined

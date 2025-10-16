@@ -13,7 +13,7 @@ const SelectOrganizationPopup: React.FC = () => {
     const [selectedId, setSelectedId] = useState<number | null>();
     const { accessToken } = useAuth()
 
-    let visible = activePopup == Popups.POPUP_ORG_SELECT
+    const visible = activePopup == Popups.POPUP_ORG_SELECT
 
     const { data: organizations = [] } = useQuery({
         queryKey: ['organizations'],

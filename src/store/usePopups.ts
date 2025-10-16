@@ -4,8 +4,8 @@ import type { Popups } from '../utils/popups';
 
 interface StoreState {
     activePopup: Popups | null
-    setActivePopup: (args?: { popup: Popups; popupData?: any }) => void
-    popupData: any
+    setActivePopup: (args?: { popup: Popups; popupData?: unknown } | null) => void
+    popupData: unknown | null
 }
 
 export const usePopups = create<StoreState>((set) => {
@@ -16,7 +16,7 @@ export const usePopups = create<StoreState>((set) => {
                 set({ activePopup: null, popupData: null })
                 return
             }
-            set({ activePopup: data?.popup, popupData: data?.popupData || null })
+            set({ activePopup: data.popup, popupData: data.popupData ?? null })
         },
         popupData: null,
     }
