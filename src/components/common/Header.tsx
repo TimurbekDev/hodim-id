@@ -1,5 +1,6 @@
 import React from 'react';
 import { Avatar, Typography } from 'antd';
+import SelectDownIcon from '../../assets/select_down.svg';
 
 interface HeaderProps {
   avatarSrc?: string;
@@ -14,7 +15,11 @@ const Header: React.FC<HeaderProps> = ({ avatarSrc, avatarRightSrc, name, branch
       <div className="flex items-center gap-2.5 sm:gap-3">
         <Avatar size={{ xs: 36, sm: 44 }} src={avatarSrc} />
         <div className="flex flex-col">
-          <Typography.Text className="text-[12px]! font-semibold sm:text-base">{name}</Typography.Text>
+          <div className="flex items-center gap-2">
+            <Typography.Text className="text-[12px]! font-semibold sm:text-base">{name}</Typography.Text>
+            {/* svg icon showing dropdown arrow */}
+            <img src={SelectDownIcon} alt="select" className="h-3 w-3" />
+          </div>
           <Typography.Text className="text-[10px]! text-gray-500! sm:text-sm">{branch}</Typography.Text>
         </div>
       </div>

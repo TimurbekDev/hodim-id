@@ -1,53 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal, List, Avatar, Typography, Radio, Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
+import { usePopups } from "../../../store/usePopups";
+import { Popups } from "../../../utils/popups";
+import { useQuery } from '@tanstack/react-query';
+import { getOrganizations } from "../../../requests/getOrganizations";
+import { useAuth } from "../../../hooks/useAuth";
 
-interface Workplace {
-    id: number;
-    name: string;
-    branch?: string;
-    avatar: string;
-}
+const SelectOrganizationPopup: React.FC = () => {
 
-interface WorkplacesListProps {
-    visible: boolean;
-    onClose: () => void;
-    selectedId: number;
-    onSelect: (id: number) => void;
-}
+    const { activePopup, setActivePopup } = usePopups()
+    const [selectedId, setSelectedId] = useState<number | null>();
+    const { accessToken } = useAuth()
 
-const workplaces: Workplace[] = [
-    {
-        id: 1,
-        name: "Yapona Mama",
-        branch: "Филиал Юнусабад",
-        avatar: "https://i.pravatar.cc/44?img=1",
-    },
-    {
-        id: 2,
-        name: "Yapona Mama",
-        branch: "Филиал Боткина",
-        avatar: "https://i.pravatar.cc/44?img=2",
-    },
-    {
-        id: 3,
-        name: "Telecom Soft",
-        avatar: "https://cdn-icons-png.flaticon.com/512/2922/2922510.png",
-    },
-    {
-        id: 4,
-        name: "Uztelecom JSC",
-        branch: "Головной офис",
-        avatar: "https://cdn-icons-png.flaticon.com/512/2919/2919600.png",
-    },
-];
+    let visible = activePopup == Popups.POPUP_ORG_SELECT
 
-const WorkplacesList: React.FC<WorkplacesListProps> = ({
-    visible,
-    onClose,
-    selectedId,
-    onSelect,
-}) => {
+    const { data: organizations = [] } = useQuery({
+        queryKey: ['organizations'],
+        queryFn: async () => await getOrganizations(accessToken as string)
+    })
+
     React.useEffect(() => {
         if (visible) {
             document.body.classList.add('overflow-hidden');
@@ -95,7 +67,7 @@ const WorkplacesList: React.FC<WorkplacesListProps> = ({
                     <Button
                         shape="circle"
                         icon={<CloseOutlined />}
-                        onClick={onClose}
+                        onClick={() => setActivePopup()}
                         className="!absolute right-2.5 top-4 !shadow-md !bg-white !border-none z-[2]"
                     />
                     <Typography.Title level={2} className="!my-4 !mt-6 !font-bold !text-[28px]">
@@ -106,23 +78,23 @@ const WorkplacesList: React.FC<WorkplacesListProps> = ({
                     <Radio.Group
                         value={selectedId}
                         size="middle"
-                        onChange={e => onSelect(e.target.value)}
+                        onChange={e => setSelectedId(e.target.value)}
                         className="w-full"
                     >
                         <List
                             itemLayout="horizontal"
-                            dataSource={workplaces}
+                            dataSource={organizations}
                             renderItem={item => (
                                 <List.Item
                                     className={`flex items-center gap-3 py-4 px-0 border-b border-gray-100 cursor-pointer ${selectedId === item.id ? "bg-gray-50" : "bg-white"
                                         }`}
-                                    onClick={() => onSelect(item.id)}
+                                    onClick={() => setSelectedId(item.id)}
                                 >
                                     <Avatar src={item.avatar} size={44} className="flex-shrink-0" />
                                     <div className="flex flex-col flex-1 min-w-0">
                                         <span className="font-[500]! text-lg text-gray-900">{item.name}</span>
-                                        {item.branch && (
-                                            <span className="text-gray-400 text-sm">{item.branch}</span>
+                                        {item.address && (
+                                            <span className="text-gray-400 text-sm">{item.address}</span>
                                         )}
                                     </div>
                                     <Radio value={item.id} className="flex-shrink-0 custom-radio" />
@@ -136,4 +108,4 @@ const WorkplacesList: React.FC<WorkplacesListProps> = ({
     );
 };
 
-export default WorkplacesList;
+export default SelectOrganizationPopup;
