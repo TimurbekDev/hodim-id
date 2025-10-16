@@ -6,18 +6,21 @@ import { Popups } from "../../../utils/popups";
 import { useQuery } from '@tanstack/react-query';
 import { getOrganizations } from "../../../requests/getOrganizations";
 import { useAuth } from "../../../hooks/useAuth";
+import { useNavigate } from 'react-router-dom';
 
 const SelectOrganizationPopup: React.FC = () => {
 
     const { activePopup, setActivePopup } = usePopups()
-    const [selectedId, setSelectedId] = useState<number | null>();
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const { accessToken } = useAuth()
+    const navigate = useNavigate()
 
     const visible = activePopup == Popups.POPUP_ORG_SELECT
 
     const { data: organizations = [] } = useQuery({
         queryKey: ['organizations'],
-        queryFn: async () => await getOrganizations(accessToken as string)
+        queryFn: async () => await getOrganizations(accessToken as string),
+        enabled: !!accessToken,
     })
 
     React.useEffect(() => {
@@ -102,6 +105,20 @@ const SelectOrganizationPopup: React.FC = () => {
                             )}
                         />
                     </Radio.Group>
+                    <div className="p-4">
+                        <Button
+                            type="primary"
+                            block
+                            disabled={selectedId === null}
+                            onClick={() => {
+                                if (selectedId == null) return
+                                navigate(`/organization/${selectedId}`)
+                                setActivePopup(null)
+                            }}
+                        >
+                            Выбрать
+                        </Button>
+                    </div>
                 </div>
             </div>
         </Modal>

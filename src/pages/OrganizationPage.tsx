@@ -85,7 +85,7 @@ const OrganizationPage: React.FC = () => {
 
             <div className="home-card-top shrink-0 p-2 flex flex-col">
                 <Header
-                    avatarSrc={organization?.avatar || "https://i.pravatar.cc/100?img=5"}
+                    avatarSrc={organization?.avatar || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTA75MqsVqzyE7GY65mw8TxzuRmEhSZHBG0Yz4RqnOu6nLYU2wr1xSPHtImuznevPqxKHI&usqp=CAU"}
                     avatarRightSrc="https://i.pravatar.cc/100?img=12"
                     name={organization?.name || "Загрузка..."}
                     branch={organization?.address || "Адрес не указан"}
