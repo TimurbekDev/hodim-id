@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { Button, Card, List} from 'antd';
 import { useAuth } from '../../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getClients } from '../../requests/getClients';
 
 const StaffsCard: React.FC = () =>{
-    const [selectedId, setSelectedId] = useState<number | null>(null)
+    const [, setSelectedId] = useState<number | null>(null)
     const { accessToken } = useAuth()
-    const navigate = useNavigate()
 
     const { data: clients = []} = useQuery({
         queryKey: ['clients'],
