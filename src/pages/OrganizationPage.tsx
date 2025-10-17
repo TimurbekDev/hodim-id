@@ -12,6 +12,8 @@ import { useAuth } from "../hooks/useAuth";
 import { usePopups } from "../store/usePopups";
 import { Popups } from "../utils/popups";
 import SelectOrganizationPopup from "../components/common/Popups/SelectOrganizationPopup";
+import BehaviourCard from "../components/common/BehaviourCard";
+import StaffsCard from "../components/common/StaffsCard";
 
 
 const OrganizationPage: React.FC = () => {
@@ -70,8 +72,7 @@ const OrganizationPage: React.FC = () => {
                     </p>
                     <Button
                         onClick={() => window.location.reload()}
-                        className="!bg-red-500 !text-white !border-red-500"
-                    >
+                        className="!bg-red-500 !text-white !border-red-500">
                         Попробовать снова
                     </Button>
                 </div>
@@ -97,19 +98,31 @@ const OrganizationPage: React.FC = () => {
 
             <div className="home-card-middle flex-1 min-h-0 px-4 pb-4 sm:px-5 sm:pb-5">
                 <div className="flex h-full min-h-0 flex-col gap-3">
-                    <ScheduleCard className="flex-1 min-h-0" />
-                    <DisciplineCard className="flex-1 min-h-0" />
+    
+                    {role === "employee" ? (
+                        <div>
+                            <ScheduleCard className="flex-1 min-h-0" />
+                            <DisciplineCard className="flex-1 min-h-0" />
+                        </div>
+                      
+                    ) : (
+                        <div className='flex flex-col h-full gap-3'>
+                            <BehaviourCard></BehaviourCard> 
+                            <StaffsCard />
+                        </div>
+                        
+                    )}
                 </div>
             </div>
-
-            <div className="home-card-bottom shrink-0 p-4 sm:p-5">
-                <Button
-                    className="home-cta w-full !h-[clamp(48px,12vw,56px)] !px-5 text-base sm:!px-6 sm:text-lg"
-                    Icon={<PlayCircleFilled />}
-                >
-                    Начать смену
-                </Button>
-            </div>
+            {role === "employee" &&
+                <div className="home-card-bottom shrink-0 p-4 sm:p-5">
+                    <Button
+                        className="home-cta w-full !h-[clamp(48px,12vw,56px)] !px-5 text-base sm:!px-6 sm:text-lg"
+                        Icon={<PlayCircleFilled />}>
+                        Начать смену
+                    </Button>
+                </div>
+            }
         </Card>
     );
 };
