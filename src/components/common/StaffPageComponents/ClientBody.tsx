@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { getClients } from "@/requests/getClients";
 import { useQuery } from "@tanstack/react-query";
-import { Card, List, Avatar } from "antd"
+import { Card, List } from "antd"
 // import { useState } from "react";
 
 

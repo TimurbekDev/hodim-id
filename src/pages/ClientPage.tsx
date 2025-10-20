@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Card, List } from 'antd';
+import React from 'react';
+import { Card } from 'antd';
 import ClientHeader from '@/components/common/StaffPageComponents/ClientHeader';
 import ClientBody from '@/components/common/StaffPageComponents/ClientBody';
 
