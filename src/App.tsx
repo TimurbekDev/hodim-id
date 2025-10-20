@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ProtectedRoutes from "./components/common/ProtectedRoutes";
-import AppProvider from "./providers/AppProvider";
-import "./styles/index.css";
+import ProtectedRoutes from "@/components/common/ProtectedRoutes";
+import AppProvider from "@/providers/AppProvider";
+import "@/styles/index.css";
 import { ErrorPage, LoginPage, OrganizationPage } from "@/pages";
+import ProfilePage from "@/pages/ProfilePage";
 function App() {
   return (
     <AppProvider>
@@ -15,6 +16,9 @@ function App() {
           <Route
             path="/organization/:orgId"
             element={<ProtectedRoutes component={<OrganizationPage />} />} />
+          <Route
+          path="/profile/:userId"
+          element={<ProtectedRoutes component={<ProfilePage />} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/error" element={<ErrorPage />} />
         </Routes>

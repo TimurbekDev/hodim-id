@@ -3,6 +3,7 @@ import { Avatar, Typography } from 'antd';
 import SelectDownIcon from '../../assets/select_down.svg';
 import { usePopups } from '../../store/usePopups';
 import { Popups } from '../../utils/popups';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   avatarSrc?: string;
@@ -14,6 +15,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ avatarSrc, avatarRightSrc, name, branch }) => {
 
   const { setActivePopup } = usePopups()
+  const navigate = useNavigate()
 
   return (
     <div className="flex h-[56px] w-full items-center justify-between">
@@ -29,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({ avatarSrc, avatarRightSrc, name, branch
       </div>
 
       {avatarRightSrc && (
-        <Avatar size={{ xs: 33, sm: 38 }} src={avatarRightSrc} />
+        <Avatar onClick={()=> navigate("/profile/15") } size={{ xs: 33, sm: 38 }} src={avatarRightSrc} />
       )}
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Card, List} from 'antd';
 import { useAuth } from '../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
-import { getClients } from '../../requests/getClients';
+import { getClients } from '@/requests/getClients';
 
 const StaffsCard: React.FC = () =>{
     const [, setSelectedId] = useState<number | null>(null)
