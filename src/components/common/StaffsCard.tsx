@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { Button, Card, List} from 'antd';
 import { useAuth } from '../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
-<<<<<<< HEAD
+
 import { getClients } from '@/requests/getClients';
-=======
-import { getClients } from '../../requests/getClients';
 import { useNavigate } from 'react-router-dom';
->>>>>>> e79bd9ac4c3554ffac798d28e84ef4adab8e94c9
+
 
 const StaffsCard: React.FC = () =>{
     const [, setSelectedId] = useState<number | null>(null)
