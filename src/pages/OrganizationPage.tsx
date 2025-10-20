@@ -45,7 +45,7 @@ const OrganizationPage: React.FC = () => {
                 token: accessToken as string
             })
         },
-        enabled: typeof organizationId === 'number' && !!accessToken,
+        enabled: typeof organizationId === 'number' && !! accessToken,
     });
 
 

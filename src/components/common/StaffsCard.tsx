@@ -3,10 +3,12 @@ import { Button, Card, List} from 'antd';
 import { useAuth } from '../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { getClients } from '../../requests/getClients';
+import { useNavigate } from 'react-router-dom';
 
 const StaffsCard: React.FC = () =>{
     const [, setSelectedId] = useState<number | null>(null)
     const { accessToken } = useAuth()
+    const navigate = useNavigate();
 
     const { data: clients = []} = useQuery({
         queryKey: ['clients'],
@@ -45,7 +47,9 @@ const StaffsCard: React.FC = () =>{
                 </List.Item>
                 )}
             />
-                <Button className='w-full !h-11 rounded-full !border-0 !bg-gray-100'>
+                <Button 
+                    onClick={() => navigate('clients')}
+                    className='w-full !h-11 rounded-full !border-0 !bg-gray-100'>
                     <p className='font-medium text-black text-[15px]'>Все сотрудники</p>    
                 </Button>
             </div>

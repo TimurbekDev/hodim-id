@@ -3,6 +3,7 @@ import ProtectedRoutes from "./components/common/ProtectedRoutes";
 import AppProvider from "./providers/AppProvider";
 import "./styles/index.css";
 import { ErrorPage, LoginPage, OrganizationPage } from "@/pages";
+import ClientPage from "./pages/ClientPage";
 function App() {
   return (
     <AppProvider>
@@ -15,6 +16,10 @@ function App() {
           <Route
             path="/organization/:orgId"
             element={<ProtectedRoutes component={<OrganizationPage />} />} />
+          <Route
+            path='/organization/:orgId/clients'
+            element={<ProtectedRoutes component={<ClientPage />} />} />
+
           <Route path="/login" element={<LoginPage />} />
           <Route path="/error" element={<ErrorPage />} />
         </Routes>
