@@ -122,6 +122,12 @@ body,
   align-items: center;
   gap: 4px;
   padding: 6px 0;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.date-pill:active {
+  transform: scale(0.95);
 }
 .date-pill .date-num {
   width: clamp(32px, 10vw, 40px);
@@ -133,6 +139,7 @@ body,
   justify-content: center;
   font-weight: 500;
   color: #111827;
+  transition: all 0.2s ease-in-out;
 }
 .date-pill.active {
   border-color: rgba(17, 24, 39, 0.08);
@@ -141,14 +148,87 @@ body,
   background: #111827;
   color: #fff;
 }
+.date-pill.today .date-num {
+  background: #3b82f6;
+  color: #fff;
+}
+.date-pill.today.active .date-num {
+  background: #111827;
+  color: #fff;
+}
 .date-pill .date-day {
-  font-size: 10px;
+  font-size: 11px;
   color: rgba(0, 0, 0, 0.45);
   text-transform: lowercase;
 }
 .date-pill:focus-visible {
   outline: 2px solid rgba(59, 130, 246, 0.6);
   outline-offset: 2px;
+}
+
+.date-pills-container {
+  position: relative;
+}
+
+.date-pills {
+  touch-action: pan-x;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  transition: all 0.3s ease-out;
+}
+
+.date-pills.animating {
+  transform: scale(0.98);
+}
+
+@media (max-width: 640px) {
+  .date-pills {
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 4px 0;
+  }
+  
+  .date-pills::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .date-pill {
+    min-width: 50px;
+    padding: 8px 4px;
+  }
+  
+  .date-pill .date-num {
+    width: clamp(36px, 12vw, 44px);
+    height: clamp(36px, 12vw, 44px);
+  }
+}
+
+.date-pill.past {
+  opacity: 0.9;
+}
+
+.date-pill.past .date-num {
+  background: rgba(255, 255, 255, 0.6);
+  color: rgba(17, 24, 39, 0.6);
+}
+
+.date-pill.past .date-day {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+.date-pill.past.active .date-num {
+  background: rgba(17, 24, 39, 0.7);
+  color: #fff;
+  opacity: 1;
+}
+
+.date-pill.past.today .date-num {
+  background: rgba(59, 130, 246, 0.6);
+  color: #fff;
 }
 
 .role-toggle {
