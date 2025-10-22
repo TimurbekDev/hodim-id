@@ -3,7 +3,7 @@ import ProtectedRoutes from "@/components/common/ProtectedRoutes";
 import AppProvider from "@/providers/AppProvider";
 import "@/styles/index.css";
 import { ErrorPage, LoginPage, OrganizationPage } from "@/pages";
-import ProfilePage from "@/pages/ProfilePage";
+import ProfilePage from "@/pages/profile/ProfilePage";
 import ClientPage from "./pages/ClientPage";
 function App() {
   return (
