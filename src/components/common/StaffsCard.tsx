@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Button, Card, List} from 'antd';
 import { useAuth } from '../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
-import { getClients } from '../../requests/getClients';
+
+import { getClients } from '@/requests/getClients';
 import { useNavigate } from 'react-router-dom';
 
 const StaffsCard = ({organizationId}:{organizationId:number}) =>{

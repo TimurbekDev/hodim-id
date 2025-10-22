@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "antd";
 import { PlayCircleFilled } from "@ant-design/icons";
 import { Button, DatePills, RoleToggle } from "@/components/ui";
@@ -14,13 +14,13 @@ import { Popups } from "../utils/popups";
 import SelectOrganizationPopup from "../components/common/Popups/SelectOrganizationPopup";
 import BehaviourCard from "../components/common/BehaviourCard";
 import StaffsCard from "../components/common/StaffsCard";
+import { getRoles } from "@/requests/getRoles";
 
 
 const OrganizationPage: React.FC = () => {
     const { orgId } = useParams()
-    const [selectedDay, setSelectedDay] = useState<number>(4);
-    const [role, setRole] = useState<'employee' | 'manager'>('employee');
-    const dayValues = [29, 30, 1, 2, 3, 4, 5];
+    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+    const [role, setRole] = useState<string>('Employee');
     const { accessToken } = useAuth()
     const { setActivePopup } = usePopups()
 
@@ -48,6 +48,20 @@ const OrganizationPage: React.FC = () => {
         enabled: typeof organizationId === 'number' && !! accessToken,
     });
 
+    const { data:organizationRoles} = useQuery({
+        queryKey:['getRoles',organizationId],
+        queryFn: async () => await getRoles({ token:accessToken as string, orgId: organizationId as number}),
+        enabled: typeof organizationId === 'number' && !! accessToken,
+    })
+
+    useEffect(() => {
+        if (organizationRoles && organizationRoles.length > 0) {
+            const availableRoles = organizationRoles.map(orgRole => orgRole.role).filter((role, index, self) => self.indexOf(role) === index);
+            if (!availableRoles.includes(role) && availableRoles.length > 0) {
+                setRole(availableRoles[0]);
+            }
+        }
+    }, [organizationRoles, role]);
 
     if (isLoading) {
         return (
@@ -92,14 +106,18 @@ const OrganizationPage: React.FC = () => {
                     branch={organization?.address || "Адрес не указан"}
                 />
 
-                <DatePills days={dayValues} selected={selectedDay} onSelect={setSelectedDay} />
-                <RoleToggle value={role} onChange={setRole} />
+                <DatePills selected={selectedDate} onSelect={setSelectedDate} />
+                <RoleToggle 
+                    value={role} 
+                    onChange={setRole} 
+                    roles={organizationRoles?.map(orgRole => orgRole.role).filter((role, index, self) => self.indexOf(role) === index).reverse() || []} 
+                />
             </div>
 
             <div className="home-card-middle flex-1 min-h-0 px-4 pb-4 sm:px-5 sm:pb-5">
                 <div className="flex h-full min-h-0 flex-col gap-3">
     
-                    {role === "employee" ? (
+                    {role === "Employee" ? (
                         <div>
                             <ScheduleCard className="flex-1 min-h-0" />
                             <DisciplineCard className="flex-1 min-h-0" />
@@ -114,7 +132,7 @@ const OrganizationPage: React.FC = () => {
                     )}
                 </div>
             </div>
-            {role === "employee" &&
+            {role === "Employee" &&
                 <div className="home-card-bottom shrink-0 p-4 sm:p-5">
                     <Button
                         className="home-cta w-full !h-[clamp(48px,12vw,56px)] !px-5 text-base sm:!px-6 sm:text-lg"
