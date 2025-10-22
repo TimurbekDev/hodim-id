@@ -10,8 +10,6 @@ interface ClientHeaderProps {
     className?: string;
 }
 
-
-
 const ClientHeader: React.FC<ClientHeaderProps> = ({className = ''}) => {
 
     const [filter, setFilter] = useState<'vse' | 'naRabote' | 'nePriwel'>('vse');

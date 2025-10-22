@@ -1,15 +1,17 @@
 import { api } from "../api"
-import type { IClient } from "../types/client"
-import { getHeaderToken } from "../utils/getHeaderToken"
+import type { ClientResponse } from "../types/client"
+import { getHeaderToken } from "@/utils/getHeaderToken"
 
-export const getClients = async (token:string) =>{
-    console.log('Bearer',token);
+type IProps = {
+    organizationId: number
+    token: string
+}
 
-    const { data } = await api.get<IClient[]>(`/client`, {
-        headers: {
-            ...getHeaderToken(token)
-        }
+export const getClients = async ({organizationId, token}: IProps) => {
+
+    const { data } = await api.get<ClientResponse>(`/organization-client/filter?organizationId=${organizationId}`,{
+        headers: { ...getHeaderToken(token)}
     })
-
+    
     return data
 }
