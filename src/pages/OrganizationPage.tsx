@@ -126,7 +126,7 @@ const OrganizationPage: React.FC = () => {
                     ) : (
                         <div className='flex flex-col h-full gap-3'>
                             <BehaviourCard></BehaviourCard> 
-                            <StaffsCard />
+                            <StaffsCard organizationId={organizationId as number}/>
                         </div>
                         
                     )}

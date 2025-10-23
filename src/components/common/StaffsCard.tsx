@@ -6,15 +6,17 @@ import { useQuery } from '@tanstack/react-query';
 import { getClients } from '@/requests/getClients';
 import { useNavigate } from 'react-router-dom';
 
-
-const StaffsCard: React.FC = () =>{
+const StaffsCard = ({organizationId}:{organizationId:number}) =>{
     const [, setSelectedId] = useState<number | null>(null)
     const { accessToken } = useAuth()
     const navigate = useNavigate();
-
-    const { data: clients = []} = useQuery({
+    
+    const { data: clients} = useQuery({
         queryKey: ['clients'],
-        queryFn: async () => await getClients(accessToken as string),
+        queryFn: async () => await getClients({
+            organizationId,
+            token: accessToken as string 
+        }),
         enabled: !!accessToken,
     })
 
@@ -27,7 +29,7 @@ const StaffsCard: React.FC = () =>{
             <List
                 className="flex flex-col gap-4 w-full h-[168px] text-center"
                 itemLayout="horizontal"
-                dataSource={clients.slice(-3)}
+                dataSource={clients?.items.slice(-3)}
                 renderItem={(item) => (
                 <List.Item
                     key={item.id}
@@ -37,7 +39,7 @@ const StaffsCard: React.FC = () =>{
                     <div className='w-1/2 flex items-center gap-4'>
                         <img
                             src={item.image_url}
-                            alt={item.username}
+                            alt={item.full_name}
                             className="w-12 h-12 rounded-full object-cover"
                         />
                         <span className="text-sm font-medium">{item.full_name}</span>
