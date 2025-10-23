@@ -1,14 +1,19 @@
 import React from "react"
 import { List, Avatar } from "antd";
 import type { ClientItem } from "@/types/client";
+import { useNavigate } from "react-router-dom";
 
 
 interface UserListProps{
     items: ClientItem[];
-    onUserClick?: (id:number) => void;
 }
 
-const ClientComponent: React.FC<UserListProps> = ({items, onUserClick}) => {
+const ClientComponent: React.FC<UserListProps> = ({items}) => {
+    const navigate = useNavigate();
+    
+    const handleItemClick = (clientId: number) => {
+        navigate(`${clientId}`, { relative: "path" });
+    };
 
     const getStatusBadge = (status?: number | null) => {
         switch (status) {
@@ -38,15 +43,13 @@ const ClientComponent: React.FC<UserListProps> = ({items, onUserClick}) => {
         }
     };
 
-    console.log(items)
-
     return(
         <List
             itemLayout="horizontal"
             dataSource={items}
             renderItem={(item) => (
                 <List.Item
-                    onClick={() => onUserClick?.(item.id)}
+                    onClick={() => handleItemClick(item.hamroh_id)}
                     className="cursor-pointer w-full h-16 hover:bg-gray-50 rounded-lg !m-0 !p-0 transition-all">
                     <List.Item.Meta
                         className="!m-0 !flex !items-center justify-center"
@@ -58,7 +61,7 @@ const ClientComponent: React.FC<UserListProps> = ({items, onUserClick}) => {
                             </Avatar>
                         }
                             title={<p className="font-medium">{item.full_name}</p>}
-                            description={`User ID: ${item.id}`}
+                            description={item.position}
                         />
 
                         {getStatusBadge(item.status)}
