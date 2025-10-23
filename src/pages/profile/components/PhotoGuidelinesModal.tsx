@@ -32,44 +32,44 @@ export default function PhotoGuidelinesModal({ open, onClose }: Props) {
       footer={null}
       width={420}
       centered
-      closable={false} // disable default X button
-      className="rounded-3xl overflow-hidden"
-      bodyStyle={{ padding: 0 }}
+      closable={false}
+      forceRender          // ✅ pre-mount content to avoid first-open lag
+      rootClassName="photo-guidelines-modal rounded-3xl overflow-hidden"  // ✅ wrapper class
+      styles={{ body: { padding: 0 } }}                                   // ✅ v5 way
     >
-      {/* Custom header */}
-      <div className="relative flex items-center justify-center p-4 border-b border-gray-100">
+      {/* header */}
+      <div className="relative flex items-center justify-center p-4">
         <button
-  onClick={onClose}
-  className="absolute left-4 flex items-center justify-center" // no bg, no rounded
-  aria-label="Назад"
->
-  <img src={backIcon} alt="" className="w-20 h-20" /> {/* 40×40 like Figma */}
-</button>
-
+          onClick={onClose}
+          className="absolute left-1 flex items-center justify-center"
+          aria-label="Назад"
+        >
+          <img src={backIcon} alt="" className="w-20 h-20" /> {/* 40×40 */}
+        </button>
         <h1 className="text-[18px] font-medium text-gray-900">Примеры фото</h1>
       </div>
 
+      {/* grid */}
       <div className="p-4 grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-3 justify-items-center">
-
         {examples.map((x, i) => (
-         <figure
-  key={i}
-  className="relative flex flex-col items-center text-center w-full max-w-[160px] sm:max-w-[180px]"
->
-
+          <figure key={i} className="relative flex flex-col items-center text-center w-full max-w-[160px] sm:max-w-[180px]">
             <div className="relative w-full aspect-square rounded-2xl overflow-hidden shadow-md">
-              <img src={x.img} alt={x.title} className="w-full h-full object-cover" />
+              <img
+                src={x.img}
+                alt={x.title}
+                className="w-full h-full object-cover"
+                loading="lazy"         // ✅ faster first paint
+                decoding="async"
+              />
               <img
                 src={x.ok ? yesIcon : noIcon}
                 alt={x.ok ? "yes" : "no"}
                 className="absolute top-0 right-0 w-10 h-10"
+                loading="lazy"
+                decoding="async"
               />
             </div>
-            <figcaption
-              className={`mt-1 text-[13px] font-medium ${
-                x.ok ? "text-green-600" : "text-red-500"
-              }`}
-            >
+            <figcaption className={`mt-1 text-[13px] font-medium ${x.ok ? "text-green-600" : "text-red-500"}`}>
               {x.title}
             </figcaption>
           </figure>

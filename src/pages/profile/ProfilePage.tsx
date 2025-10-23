@@ -23,16 +23,16 @@ const ProfilePage = () => {
   return (
     <Card className="home-card w-full max-w-[520px] h-full rounded-3xl shadow-2xl border-none overflow-hidden flex flex-col">
       {/* HEADER */}
-      <div className="relative flex items-center justify-center pt-4 pb-2 border-b border-gray-100">
-  <button
-    onClick={() => navigate(-1)}
-    className="absolute left-4 flex items-center justify-center"
-    aria-label="Назад"
-  >
-    <img src={backIcon} alt="Назад" className="w-10 h-10" /> 
-  </button>
-  <h1 className="text-[18px] font-medium text-gray-900">Профиль</h1>
-</div>
+      <div className="relative flex items-center justify-center pt-4 pb-2 border-b border-transparent">
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute left-1 flex items-center justify-center"
+          aria-label="Назад"
+        >
+          <img src={backIcon} alt="Назад" className="w-19 h-19" />
+        </button>
+        <h1 className="text-[18px] font-medium text-gray-900">Профиль</h1>
+      </div>
 
 
 

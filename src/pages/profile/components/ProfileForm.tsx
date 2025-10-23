@@ -33,19 +33,19 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
   return (
     <div className="w-full">
       {/* Avatar */}
-     <div className="mt-5 mb-4 flex justify-center">
-  <img
-    src={avatar}
-    alt={fullName}
-    className="w-20 h-20 rounded-full object-cover border"
-  />
-</div>
+      <div className="mt-4 mb-4 flex justify-center">
+        <img
+          src={avatar}
+          alt={fullName}
+          className="w-20 h-20 rounded-full object-cover border"
+        />
+      </div>
 
 
       {/* Info banner + link to examples (optional) */}
-      <div className="mb-4">
-  <InfoBanner onShowExamples={onShowExamples} />
-</div>
+      <div className="mb-5">
+        <InfoBanner onShowExamples={onShowExamples} />
+      </div>
 
 
       {/* Read-only fields (grey pills) */}

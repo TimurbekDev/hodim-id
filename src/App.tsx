@@ -5,6 +5,7 @@ import "@/styles/index.css";
 import { ErrorPage, LoginPage, OrganizationPage } from "@/pages";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import ClientPage from "./pages/ClientPage";
+import ProfileSettingsPage from "./pages/profile/ProfileSettingsPage";
 function App() {
   return (
     <AppProvider>
@@ -18,16 +19,18 @@ function App() {
             path="/organization/:orgId"
             element={<ProtectedRoutes component={<OrganizationPage />} />} />
           <Route
+            path="/profile/:userId"
+            element={<ProtectedRoutes component={<ProfileSettingsPage />} />}
+          />
+          <Route
+            path="/profile/:userId/edit"
+            element={<ProtectedRoutes component={<ProfilePage />} />}
+          />
 
-          path="/profile/:userId"
-          element={<ProtectedRoutes component={<ProfilePage />} />} />
-          <Route 
-          
-              path='/organization/:orgId/clients'
-              element={<ProtectedRoutes component={<ClientPage />} />} />
-            
-          
+          <Route
 
+            path='/organization/:orgId/clients'
+            element={<ProtectedRoutes component={<ClientPage />} />} />
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/error" element={<ErrorPage />} />
