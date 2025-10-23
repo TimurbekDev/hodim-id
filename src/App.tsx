@@ -32,14 +32,9 @@ function App() {
           />
 
           <Route
-
             path='/organization/:orgId/clients'
             element={<ProtectedRoutes component={<ClientPage />} />} />
-    
 
-          <Route 
-              path='/organization/:orgId/clients'
-              element={<ProtectedRoutes component={<ClientPage />} />} />
         
           <Route 
               path='/organization/:orgId/clients/:clientId' 
