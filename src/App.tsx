@@ -5,6 +5,7 @@ import "@/styles/index.css";
 import { ErrorPage, LoginPage, OrganizationPage } from "@/pages";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import ClientPage from "./pages/ClientPage";
+import ProfileSettingsPage from "./pages/profile/ProfileSettingsPage";
 import ClientDetailPage from "@/pages/ClientDetailPage";
 function App() {
   return (
@@ -22,8 +23,19 @@ function App() {
             element={<ProtectedRoutes component={<OrganizationPage />} />} />
 
           <Route
-          path="/profile/:userId"
-          element={<ProtectedRoutes component={<ProfilePage />} />} />
+            path="/profile/:userId"
+            element={<ProtectedRoutes component={<ProfileSettingsPage />} />}
+          />
+          <Route
+            path="/profile/:userId/edit"
+            element={<ProtectedRoutes component={<ProfilePage />} />}
+          />
+
+          <Route
+
+            path='/organization/:orgId/clients'
+            element={<ProtectedRoutes component={<ClientPage />} />} />
+    
 
           <Route 
               path='/organization/:orgId/clients'

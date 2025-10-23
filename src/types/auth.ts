@@ -18,3 +18,9 @@ export interface ILoginResponse {
     accessToken: string
     refreshToken: string
 }
+
+export interface AuthContextType {
+  accessToken: string | null;
+  setAccessToken: (token: string | null) => void;
+  signOut: () => void; // 👈 add this line
+}
