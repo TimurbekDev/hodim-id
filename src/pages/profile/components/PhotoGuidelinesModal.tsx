@@ -49,9 +49,14 @@ export default function PhotoGuidelinesModal({ open, onClose }: Props) {
         <h1 className="text-[18px] font-medium text-gray-900">Примеры фото</h1>
       </div>
 
-      <div className="p-4 grid grid-cols-2 gap-3 justify-items-center">
+      <div className="p-4 grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-3 justify-items-center">
+
         {examples.map((x, i) => (
-          <figure key={i} className="relative flex flex-col items-center text-center w-[160px]">
+         <figure
+  key={i}
+  className="relative flex flex-col items-center text-center w-full max-w-[160px] sm:max-w-[180px]"
+>
+
             <div className="relative w-full aspect-square rounded-2xl overflow-hidden shadow-md">
               <img src={x.img} alt={x.title} className="w-full h-full object-cover" />
               <img

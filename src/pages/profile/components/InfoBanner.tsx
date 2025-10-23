@@ -8,7 +8,7 @@ export default function InfoBanner({ onShowExamples }: Props) {
       <div className="shrink-0 mt-0.5">
         <InfoCircleOutlined />
       </div>
-      <div className="text-[14px] leading-[20px]">
+      <div className="text-[15px] leading-[20px]">
         Лицо на фото должно быть различимым и смотреть на камеру.{" "}
         {/* Use a button styled like a link; no dead href="#" */}
         <button

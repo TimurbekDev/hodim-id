@@ -33,16 +33,17 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
   return (
     <div className="w-full">
       {/* Avatar */}
-      <div className="flex justify-center mb-3">
-        <img
-          src={avatar}
-          alt={fullName}
-          className="w-28 h-28 rounded-full object-cover border"
-        />
-      </div>
+     <div className="mt-5 mb-4 flex justify-center">
+  <img
+    src={avatar}
+    alt={fullName}
+    className="w-20 h-20 rounded-full object-cover border"
+  />
+</div>
+
 
       {/* Info banner + link to examples (optional) */}
-      <div className="mb-3">
+      <div className="mb-4">
   <InfoBanner onShowExamples={onShowExamples} />
 </div>
 
