@@ -49,7 +49,7 @@ const ClientComponent: React.FC<UserListProps> = ({items}) => {
             dataSource={items}
             renderItem={(item) => (
                 <List.Item
-                    onClick={() => handleItemClick(item.hamroh_id)}
+                    onClick={() => handleItemClick(item.id)}
                     className="cursor-pointer w-full h-16 hover:bg-gray-50 rounded-lg !m-0 !p-0 transition-all">
                     <List.Item.Meta
                         className="!m-0 !flex !items-center justify-center"
@@ -63,7 +63,7 @@ const ClientComponent: React.FC<UserListProps> = ({items}) => {
                             title={<p className="font-medium">{item.full_name}</p>}
                             description={item.position}
                         />
-
+                        
                         {getStatusBadge(item.status)}
                 </List.Item>
             )}>

@@ -26,6 +26,7 @@ const ClientPage: React.FC = () => {
         enabled: !!accessToken && !!orgId, 
     });
 
+    
     if (isLoading) return (<Spin tip="Loading clients..." />);
     if (isError) return <Alert message="Failed to load clients" type="error" />;
 

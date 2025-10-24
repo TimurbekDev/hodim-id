@@ -48,6 +48,8 @@ const BehaviourCard: React.FC<BehaviourCardProps> = ({
                 
                 </div>
              </div>
+
+            
         </Card>
     )
 };
