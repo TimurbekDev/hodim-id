@@ -6,6 +6,7 @@ import { ErrorPage, LoginPage, OrganizationPage } from "@/pages";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import ClientPage from "./pages/ClientPage";
 import ProfileSettingsPage from "./pages/profile/ProfileSettingsPage";
+import BillingPage from "./pages/billing/BillingPage";
 function App() {
   return (
     <AppProvider>
@@ -25,6 +26,10 @@ function App() {
           <Route
             path="/profile/:userId/edit"
             element={<ProtectedRoutes component={<ProfilePage />} />}
+          />
+          <Route
+            path="/billing/plan"
+            element={<ProtectedRoutes component={<BillingPage />} />}
           />
 
           <Route
