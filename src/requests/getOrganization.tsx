@@ -8,7 +8,7 @@ type IProps = {
 }
 
 export const getOrganization = async ({ orgId, token }: IProps) => {
-
+    console.log("auth succ")
     const { data } = await api.get<IOrgaqnization>(`/organization/${orgId}`, {
         headers: { ...getHeaderToken(token) }
     })

@@ -1,11 +1,17 @@
 interface FilterToggleProps {
     value: ('vse'| 'naRabote'| 'nePriwel');
     onChange: (v: 'vse' | 'naRabote' | 'nePriwel') => void;
+    all?: number;
+    atWork?: number;
+    absent?: number;
 }
 
 const FilterToggle: React.FC<FilterToggleProps> = ({
     value = 'vse', 
     onChange = () => {},
+    all = 0,
+    atWork = 0,
+    absent = 0
 
 }) => {
     return (
@@ -21,7 +27,7 @@ const FilterToggle: React.FC<FilterToggleProps> = ({
             }`}
 
         >
-            <p className="leading-none">Все ()</p>
+            <p className="leading-none">Все ({all})</p>
         </button>
        <button 
             type="button"
@@ -34,7 +40,7 @@ const FilterToggle: React.FC<FilterToggleProps> = ({
             }`}
 
         >
-            <p className="leading-none">На работе ()</p>
+            <p className="leading-none">На работе ({atWork})</p>
         </button>
         <button 
             type="button"
@@ -47,7 +53,7 @@ const FilterToggle: React.FC<FilterToggleProps> = ({
             }`}
 
         >
-            <p className="leading-none">Не пришли ()</p>
+            <p className="leading-none">Не пришли ({absent})</p>
         </button>
     </div>
   );

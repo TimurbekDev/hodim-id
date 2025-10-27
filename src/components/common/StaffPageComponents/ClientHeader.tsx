@@ -8,9 +8,17 @@ import SearchInput from "@/components/ui/ClientPageButtons/SearchInput";
 
 interface ClientHeaderProps {
     className?: string;
+    all?: number;
+    atWork?: number;
+    absent?: number;
 }
 
-const ClientHeader: React.FC<ClientHeaderProps> = ({className = ''}) => {
+const ClientHeader: React.FC<ClientHeaderProps> = ({
+    className = '',
+    all = 0,
+    atWork = 0,
+    absent = 0
+}) => {
 
     const [filter, setFilter] = useState<'vse' | 'naRabote' | 'nePriwel'>('vse');
 
@@ -25,6 +33,9 @@ const ClientHeader: React.FC<ClientHeaderProps> = ({className = ''}) => {
                     </div>
                 </div>
                 <FilterToggle 
+                    absent={absent}
+                    atWork={atWork}
+                    all={all}
                     onChange={(v) => setFilter(v)}
                     value={filter}
                 />
