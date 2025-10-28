@@ -106,31 +106,99 @@ export async function makeInvoice(planId: number, token?: string) {
   return data;
 }
 
+export type CurrentPlan = BillingPlan & {
+  balance?: number;
+  startDate?: string;
+  endDate?: string;
+};
+
+/** GET /billing/plan returns { autopay: {...} } (or { plan: {...} }) */
+// export async function getCurrentUserBillingPlan(
+//   token?: string
+// ): Promise<CurrentPlan | null> {
+//   const { data } = await api.get<{ plan?: any; autopay?: any }>(
+//     "/billing/plan",
+//     auth(token)
+//   );
+
+//   const p = data.plan ?? data.autopay;
+//   if (!p) return null;
+
+//   const mapped: CurrentPlan = {
+//     id: p.id,
+//     name: p.name,
+//     pricePerMonth: p.pricePerMonth ?? 0,
+//     currency: p.currency ?? "UZS",
+//     description: p.description ?? p.describtion ?? "",
+//     maxEmployeesInOrganizations: p.maxEmployeesInOrganizations ?? 0,
+//     maxOrganizations: p.maxOrganizations ?? 0,
+//     features: [],
+//     status: p.isActive ? "active" : "inactive",
+
+//     // 👇 keep the extra fields
+//     balance: typeof p.balance === "number" ? p.balance : undefined,
+//     startDate: p.startDate ?? p.start_date ?? undefined,
+//     endDate: p.endDate ?? p.end_date ?? undefined,
+//   };
+
+//   return mapped;
+// }
+
+
+/** GET /billing/plan returns { plan?: {...}, autopay?: {...} } */
+interface AutopayInfo {
+  enabled: boolean;
+}
+
+export interface BillingPlanResponse {
+  plan?: CurrentPlan | null;
+  autopay?: AutopayInfo | null;
+}
+
+/** GET /billing/plan returns { plan?: {...} } or { autopay?: {...} } */
 export async function getCurrentUserBillingPlan(
   token?: string
-): Promise<BillingPlan | null> {
-  const { data } = await api.get<{ plan?: RawPlan; autopay?: RawPlan }>(
-    "/billing/plan",
-    auth(token)
-  );
-
-  const p = data.plan ?? data.autopay;
-  if (!p) return null;
-
-  const mapped: BillingPlan = {
-    id: p.id,
-    name: p.name,
-    pricePerMonth: p.pricePerMonth ?? 0,
-    currency: p.currency ?? "UZS",
-    description: p.description ?? p.describtion ?? "",
-    maxEmployeesInOrganizations: p.maxEmployeesInOrganizations ?? 0,
-    maxOrganizations: p.maxOrganizations ?? 0,
-    features: [],
-    status: p.isActive ? "active" : "inactive",
-  };
-
-  return mapped;
+): Promise<CurrentPlan | null> {
+  const { data } = await api.get<BillingPlanResponseRaw>("/billing/plan", auth(token));
+  const raw = data.plan ?? data.autopay ?? null;
+  return raw ? mapRawCurrentPlan(raw) : null;
 }
+
+
+// ---- helper backend types (add this one) ----
+interface RawCurrentPlan extends RawPlan {
+  balance?: number;
+  startDate?: string;
+  start_date?: string;
+  endDate?: string;
+  end_date?: string;
+}
+
+// Response union the backend actually sends
+interface BillingPlanResponseRaw {
+  plan?: RawCurrentPlan | null;
+  autopay?: RawCurrentPlan | null;
+}
+
+// Map RawCurrentPlan -> CurrentPlan
+const mapRawCurrentPlan = (p: RawCurrentPlan): CurrentPlan => ({
+  id: p.id,
+  name: p.name,
+  pricePerMonth: p.pricePerMonth ?? 0,
+  currency: p.currency ?? "UZS",
+  description: p.describtion ?? p.description ?? "",
+  maxEmployeesInOrganizations: p.maxEmployeesInOrganizations ?? 0,
+  maxOrganizations: p.maxOrganizations ?? 0,
+  features: [],
+  status: p.isActive ? "active" : "inactive",
+
+  balance: typeof p.balance === "number" ? p.balance : undefined,
+  startDate: p.startDate ?? p.start_date ?? undefined,
+  endDate: p.endDate ?? p.end_date ?? undefined,
+});
+
+
+
 
 export async function getBillingAnalytics(
   params?: AnalyticsParams & { token?: string }
@@ -165,8 +233,8 @@ export async function getBillingAnalytics(
       (paymentType === "cancel"
         ? "failed"
         : amount > 0
-        ? "succeeded"
-        : "failed");
+          ? "succeeded"
+          : "failed");
 
     return {
       type: "payment",
