@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
 import { Button, Card, List} from 'antd';
 import { useAuth } from '../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 
 import { getClients } from '@/requests/getClients';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 const StaffsCard = ({organizationId}:{organizationId:number}) =>{
     const [, setSelectedId] = useState<number | null>(null)

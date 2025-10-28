@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getMe } from "@/requests/getMe";
 import { useAuth } from "@/hooks/useAuth";
+import { getCurrentUserBillingPlan } from "@/requests/billing";
+import type { CurrentPlan } from "@/requests/billing";
+
 
 import backIcon from "@/assets/icons/icon-navbar.svg";
 import chevronRight from "@/assets/icons/Chevron.svg";
@@ -23,6 +26,8 @@ type RowProps = {
     end?: React.ReactNode;
     onClick?: () => void;
 };
+
+
 
 const Row = ({ title, subtitle, subtitleInline, iconSrc, end, onClick }: RowProps) => {
     const clickable = Boolean(onClick);
@@ -112,11 +117,25 @@ export default function ProfileSettingsPage() {
     const [dark, setDark] = useState(false);
     const [notifications, setNotifications] = useState(true);
 
+    // CURRENT PLAN
+    const {
+        data: plan,
+        isLoading: loadingPlan,
+    } = useQuery<CurrentPlan | null>({
+        queryKey: ["current-plan", !!accessToken],
+        queryFn: () => getCurrentUserBillingPlan(accessToken ?? undefined),
+        enabled: !!accessToken,
+        staleTime: 60_000,
+        retry: false,
+    });
+
+
+
     const fullName = me?.full_name || me?.username || "—";
     const avatar =
         me?.image_url?.startsWith("http")
             ? me.image_url
-            : "/images/avatar-placeholder.webp";
+                : "https://i.pravatar.cc/100?img=12";
 
     return (
         <Card className="home-card w-full max-w-[520px] h-full rounded-3xl shadow-2xl border-none overflow-hidden flex flex-col">
@@ -208,10 +227,11 @@ export default function ProfileSettingsPage() {
                     <Row
                         title="Текущий тариф"
                         iconSrc={planIcon}
-                        subtitle="Enterprise"
-                        subtitleInline            // 👈 add this
+                        subtitleInline
+                        subtitle={loadingPlan ? "..." : plan?.name ?? "—"}
                         onClick={() => nav("/billing/plan")}
                     />
+
 
                     <Row
                         title="Мои организации"
