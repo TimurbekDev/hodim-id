@@ -1,6 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  display: none;
+}
+
+/* Remove extra inner padding and arrow in some browsers */
+input[type="time"]::-webkit-inner-spin-button,
+input[type="time"]::-webkit-clear-button {
+  display: none;
+}
+
 /* Light mode (default) */
 :root {
   --font-google-sans: "Google Sans", sans-serif;
