@@ -225,7 +225,7 @@ export default function BillingPage() {
   return (
     <Card className="home-card w-full max-w-[520px] h-[100dvh] rounded-3xl shadow-2xl border-none overflow-hidden flex flex-col">
       {/* Header */}
-      <div className="relative flex items-center justify-center pt-2 pb-0">
+      <div className="relative flex items-center justify-center pt-2 pb-2">
         <Button
           type="text"
           className="!absolute left-1"
@@ -240,7 +240,7 @@ export default function BillingPage() {
 
 
       {/* Body */}
-      <div className="flex-1 min-h-0 overflow-hidden px-4 pb-4 sm:px-5 sm:pb-5 space-y-3">
+      <div className="flex-1 min-h-0 overflow-hidden px-4 pb-4 sm:px-5 sm:pb-5 space-y-4.5">
         {/* Current plan */}
         <section>
           <Text style={{ color: "#85889E" }} className="block mb-2 text-[17px] leading-[22px]">
