@@ -28,7 +28,7 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
   // If backend returns a key instead of a full URL, swap this mapping.
   const avatar = me.image_url?.startsWith("http")
     ? me.image_url
-    : "/images/avatar-placeholder.webp"; // put a placeholder into /public/images if you want
+    : "https://i.pravatar.cc/100?img=12"; 
 
   return (
     <div className="w-full">

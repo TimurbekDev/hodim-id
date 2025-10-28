@@ -135,7 +135,7 @@ export default function ProfileSettingsPage() {
     const avatar =
         me?.image_url?.startsWith("http")
             ? me.image_url
-            : "/images/avatar-placeholder.webp";
+                : "https://i.pravatar.cc/100?img=12";
 
     return (
         <Card className="home-card w-full max-w-[520px] h-full rounded-3xl shadow-2xl border-none overflow-hidden flex flex-col">
