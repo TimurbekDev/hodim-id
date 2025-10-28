@@ -99,6 +99,12 @@ body,
   border-radius: 24px;
 }
 
+/* simple spin animation used by camera overlay ring */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .date-pills {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -216,6 +222,11 @@ body,
   color: rgba(17, 24, 39, 0.6);
 }
 
+/* camera transition helpers */
+.camera-video-transition {
+  transition: object-position 240ms ease, clip-path 240ms ease, border-radius 240ms ease;
+}
+
 .date-pill.past .date-day {
   color: rgba(0, 0, 0, 0.25);
 }
@@ -225,7 +236,22 @@ body,
   color: #fff;
   opacity: 1;
 }
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 
+.camera-video-transition {
+  transition: object-position 0.3s ease, clip-path 0.3s ease, border-radius 0.3s ease;
+}
+
+.rotating-circle {
+  animation: spin 2s linear infinite;
+}
 .date-pill.past.today .date-num {
   background: rgba(59, 130, 246, 0.6);
   color: #fff;

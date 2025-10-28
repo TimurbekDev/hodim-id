@@ -6,7 +6,7 @@ import Header from "@/components/common/Header";
 import ScheduleCard from "@/components/common/ScheduleCard";
 import DisciplineCard from "../components/common/DisciplineCard";
 import { useParams } from "react-router-dom";
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getOrganization } from "../requests/getOrganization";
 import { useAuth } from "../hooks/useAuth";
 import { usePopups } from "../store/usePopups";
@@ -15,6 +15,8 @@ import SelectOrganizationPopup from "../components/common/Popups/SelectOrganizat
 import BehaviourCard from "../components/common/BehaviourCard";
 import StaffsCard from "../components/common/StaffsCard";
 import { getRoles } from "@/requests/getRoles";
+import CameraCapture from "@/components/ui/Camera";
+import { arrive } from "@/requests/arrive";
 
 
 const OrganizationPage: React.FC = () => {
@@ -23,15 +25,41 @@ const OrganizationPage: React.FC = () => {
     const [role, setRole] = useState<string>('Employee');
     const { accessToken } = useAuth()
     const { setActivePopup } = usePopups()
+    const [isOpen, setIsOpen] = useState(false);
 
     React.useEffect(() => {
         if (!orgId) {
             setActivePopup({ popup: Popups.POPUP_ORG_SELECT })
         }
-    }, [orgId,setActivePopup]);
+    }, [orgId, setActivePopup]);
 
     const parsedOrgId = orgId ? Number(orgId) : undefined
     const organizationId = Number.isFinite(parsedOrgId) ? (parsedOrgId as number) : undefined
+
+    const queryClient = useQueryClient()
+    const mutation = useMutation({
+        mutationFn: async ({ arrivalImage, longitude, latitude }: {
+            arrivalImage: string
+            longitude: number
+            latitude: number
+        }) => await arrive({
+            token: accessToken as string,
+            organizationClientId: organizationId as number,
+            arrivalImage,
+            longitude,
+            latitude
+        }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['work-time'] })
+        }
+    })
+    const handleCapture = (img: string) => {
+        mutation.mutate({
+            arrivalImage: img,
+            latitude: 111,
+            longitude: 111
+        })
+    };
 
     const {
         data: organization,
@@ -45,13 +73,13 @@ const OrganizationPage: React.FC = () => {
                 token: accessToken as string
             })
         },
-        enabled: typeof organizationId === 'number' && !! accessToken,
+        enabled: typeof organizationId === 'number' && !!accessToken,
     });
 
-    const { data:organizationRoles} = useQuery({
-        queryKey:['getRoles',organizationId],
-        queryFn: async () => await getRoles({ token:accessToken as string, orgId: organizationId as number}),
-        enabled: typeof organizationId === 'number' && !! accessToken,
+    const { data: organizationRoles } = useQuery({
+        queryKey: ['getRoles', organizationId],
+        queryFn: async () => await getRoles({ token: accessToken as string, orgId: organizationId as number }),
+        enabled: typeof organizationId === 'number' && !!accessToken,
     })
 
     useEffect(() => {
@@ -107,33 +135,33 @@ const OrganizationPage: React.FC = () => {
                 />
 
                 <DatePills selected={selectedDate} onSelect={setSelectedDate} />
-                <RoleToggle 
-                    value={role} 
-                    onChange={setRole} 
-                    roles={organizationRoles?.map(orgRole => orgRole.role).filter((role, index, self) => self.indexOf(role) === index).reverse() || []} 
+                <RoleToggle
+                    value={role}
+                    onChange={setRole}
+                    roles={organizationRoles?.map(orgRole => orgRole.role).filter((role, index, self) => self.indexOf(role) === index).reverse() || []}
                 />
             </div>
 
             <div className="home-card-middle flex-1 min-h-0 px-4 pb-4 sm:px-5 sm:pb-5">
                 <div className="flex h-full min-h-0 flex-col gap-3">
-    
+
                     {role === "Employee" ? (
                         <div>
-                            <ScheduleCard className="flex-1 min-h-0" />
+                            <ScheduleCard day={selectedDate as Date} organizationId={organizationId} className="flex-1 min-h-0" />
                             <DisciplineCard className="flex-1 min-h-0" />
                         </div>
-                      
+
                     ) : (
                         <div className='flex flex-col h-full gap-3'>
-                            <BehaviourCard></BehaviourCard> 
-                            <StaffsCard organizationId={organizationId as number}/>
+                            <BehaviourCard></BehaviourCard>
+                            <StaffsCard organizationId={organizationId as number} />
                         </div>
-                        
+
                     )}
                 </div>
             </div>
             {role === "Employee" &&
-                <div className="home-card-bottom shrink-0 p-4 sm:p-5">
+                <div className="home-card-bottom shrink-0 p-4 sm:p-5" onClick={() => setIsOpen(true)}>
                     <Button
                         className="home-cta w-full !h-[clamp(48px,12vw,56px)] !px-5 text-base sm:!px-6 sm:text-lg"
                         Icon={<PlayCircleFilled />}>
@@ -141,6 +169,11 @@ const OrganizationPage: React.FC = () => {
                     </Button>
                 </div>
             }
+            <CameraCapture
+                open={isOpen}
+                onClose={() => setIsOpen(false)}
+                onCapture={handleCapture}
+            />
         </Card>
     );
 };
