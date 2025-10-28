@@ -28,23 +28,24 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
   // If backend returns a key instead of a full URL, swap this mapping.
   const avatar = me.image_url?.startsWith("http")
     ? me.image_url
-    : "/images/avatar-placeholder.webp"; // put a placeholder into /public/images if you want
+    : "https://i.pravatar.cc/100?img=12"; 
 
   return (
     <div className="w-full">
       {/* Avatar */}
-      <div className="flex justify-center mb-3">
+      <div className="mt-4 mb-4 flex justify-center">
         <img
           src={avatar}
           alt={fullName}
-          className="w-28 h-28 rounded-full object-cover border"
+          className="w-20 h-20 rounded-full object-cover border"
         />
       </div>
 
+
       {/* Info banner + link to examples (optional) */}
-      <div className="mb-3">
-  <InfoBanner onShowExamples={onShowExamples} />
-</div>
+      <div className="mb-5">
+        <InfoBanner onShowExamples={onShowExamples} />
+      </div>
 
 
       {/* Read-only fields (grey pills) */}

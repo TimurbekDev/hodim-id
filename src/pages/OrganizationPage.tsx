@@ -21,8 +21,8 @@ import { arrive } from "@/requests/arrive";
 
 const OrganizationPage: React.FC = () => {
     const { orgId } = useParams()
-    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-    const [role, setRole] = useState<string>('Employee');
+    const [ selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+    const [ role, setRole] = useState<string>('Employee');
     const { accessToken } = useAuth()
     const { setActivePopup } = usePopups()
     const [isOpen, setIsOpen] = useState(false);

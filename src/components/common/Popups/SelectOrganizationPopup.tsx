@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 const SelectOrganizationPopup: React.FC = () => {
 
     const { activePopup, setActivePopup } = usePopups()
-    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [ selectedId, setSelectedId] = useState<number | null>(null);
     const { accessToken } = useAuth()
     const navigate = useNavigate()
 
