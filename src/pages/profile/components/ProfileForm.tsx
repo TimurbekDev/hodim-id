@@ -53,7 +53,7 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
     if (!file || !accessToken) return;
 
     // (optional) instant local preview while uploading
-    const revoke = () => { };
+    let revoke = () => { };
     try {
       const blobUrl = URL.createObjectURL(file);
       setAvatarUrl(blobUrl);
