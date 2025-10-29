@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Modal, Switch } from "antd"
 import BackButton from "@/components/ui/BackButton";
 import { createSchedule } from "@/requests/CreateSchedule";
+import { Button } from "@/components/ui";
 
 interface ScheduleModalProps {
     isOpen: boolean;
@@ -87,13 +88,9 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose }) =>
                     )
                 })}
 
-                <button
-                    onClick={handleSubmit}
-                    className="bg-blue-600 text-white rounded-lg py-3"
-                >
-                    Создать
-                </button>
+                <Button title="create" onClick={handleSubmit} className="w-full"/>
             </div>
+            
         </Modal>
     )
 }
