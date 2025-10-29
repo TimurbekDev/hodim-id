@@ -20,6 +20,7 @@ const ScheduleEditCard: React.FC<ScheduleEditCardProps> = ({schedules}) => {
     };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedSchedule, setSelectedSchedule] = useState<Schedule | undefined>(undefined);
     
     const handleClick = () => {
         setIsModalOpen(true);
@@ -42,9 +43,17 @@ const ScheduleEditCard: React.FC<ScheduleEditCardProps> = ({schedules}) => {
                             className="flex gap-0 !p-0 ">
                             <div className="h-full w-full p-2 flex flex-col gap-4">
                                 <div className="flex flex-row w-full justify-between">
-                                    <p className="font-medium text-xl">{item.name}</p>
-                                    <Button className="w-9 !h-9 !bg-gray-200 !border-0 !p-0">
-                                        <img src={pen} width={24} height={24}/>
+                                    <p className="font-medium text-xl truncate overflow-hidden whitespace-nowrap">
+                                        {item.name}
+                                    </p>
+                                    <Button
+                                        className="w-9 !h-9 !bg-gray-200 !border-0 !p-0"
+                                        onClick={() => {
+                                            setSelectedSchedule(item);
+                                            setIsModalOpen(true);
+                                        }}
+                                    >
+                                        <img src={pen} width={24} height={24} />
                                     </Button>
                                 </div>
                                 <div className="flex flex-col gap-4">
@@ -67,10 +76,14 @@ const ScheduleEditCard: React.FC<ScheduleEditCardProps> = ({schedules}) => {
                                     
                                 </div>
                             </div>
+                            <ScheduleModal
+                                isOpen={isModalOpen}
+                                handleClose={handleClose}
+                                schedule={selectedSchedule}/>
                         </List.Item>
                     )}>
                 </List>
-                {<ScheduleModal isOpen={isModalOpen} handleClose={handleClose} /> }
+                {/* {<ScheduleModal isOpen={isModalOpen} handleClose={handleClose} /> } */}
                 <Button 
                     onClick={handleClick}
                     className="w-full !h-11 !bg-gray-100 mb-2 !border-0 shadow-none">
