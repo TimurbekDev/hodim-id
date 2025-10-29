@@ -2,20 +2,27 @@ import { api } from "@/api"
 import { getHeaderToken } from "@/utils/getHeaderToken"
 
 interface CreateSchedulePayload {
-    organizationUserId: number
     startTime: string
     endTime: string
     workDays: number[]
 }
 
-export const createSchedule = async (
-    payload: CreateSchedulePayload,
+export type IProps = {
+    payload: CreateSchedulePayload
     token: string
-) => {
+    organizationId: number
+}
+
+export const createSchedule = async ({ payload, token, organizationId }: IProps) => {
     const { data } = await api.post(
-        "/schedules/create",
+        `/schedules/create?organizationId=${organizationId}`,
         payload,
-        getHeaderToken(token)
+        {
+            headers: {
+                ...getHeaderToken(token)
+            }
+        }
     )
+
     return data
 }
