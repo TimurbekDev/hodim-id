@@ -11,9 +11,10 @@ interface ScheduleModalProps {
     isOpen: boolean;
     handleClose: () => void;
     schedule?: Schedule;
+    isEdit?: boolean
 }
 
-const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose, schedule }) => {
+const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose, schedule, isEdit = false }) => {
     const weekDays: Record<number, string> = {
         1: "Monday", 2: "Tuesday", 3: "Wednesday",
         4: "Thursday", 5: "Friday", 6: "Saturday", 7: "Sunday"
@@ -60,6 +61,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose, sche
             console.log("invalidated err")
         }
     })
+
     const handleSubmit = () => {
         const payload = {
             name,
@@ -73,7 +75,6 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose, sche
                 payload: { ...payload, id: schedule.id },
                 token: accessToken as string,
                 organizationId: parsedOrgId as number,
-                isEdit: true
             })
         } else {
             mutation.mutate({

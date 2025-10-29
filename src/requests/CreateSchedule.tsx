@@ -5,12 +5,13 @@ interface CreateSchedulePayload {
     startTime: string
     endTime: string
     workDays: number[]
+    id?: number
 }
 
 export type IProps = {
     payload: CreateSchedulePayload
     token: string
-    organizationId: number
+    organizationId?: number
 }
 
 export const createSchedule = async ({ payload, token, organizationId }: IProps) => {
@@ -25,4 +26,15 @@ export const createSchedule = async ({ payload, token, organizationId }: IProps)
     )
 
     return data
+}
+
+
+export const updateSchedule = async (payload: CreateSchedulePayload, token: string) => {
+  const { data } = await api.put(`/schedules/modify`, payload, {
+    headers: {
+      ...getHeaderToken(token)
+    }
+  })
+
+  return data
 }
