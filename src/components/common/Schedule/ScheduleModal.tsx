@@ -11,10 +11,9 @@ interface ScheduleModalProps {
     isOpen: boolean;
     handleClose: () => void;
     schedule?: Schedule;
-    isEdit?: boolean
 }
 
-const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose, schedule, isEdit = false }) => {
+const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose, schedule }) => {
     const weekDays: Record<number, string> = {
         1: "Monday", 2: "Tuesday", 3: "Wednesday",
         4: "Thursday", 5: "Friday", 6: "Saturday", 7: "Sunday"

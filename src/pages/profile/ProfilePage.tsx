@@ -9,6 +9,7 @@ import { useState } from "react";
 
 import backIcon from "@/assets/icons/icon-navbar (1).svg"; // your arrow-left icon
 
+
 const ProfilePage = () => {
   const { accessToken } = useAuth();
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const ProfilePage = () => {
     queryFn: () => getMe(accessToken!),
     enabled: !!accessToken,
   });
+  
 
   return (
     <Card className="home-card w-full max-w-[520px] h-full rounded-3xl shadow-2xl border-none overflow-hidden flex flex-col">
