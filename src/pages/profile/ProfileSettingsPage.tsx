@@ -6,7 +6,7 @@ import { getMe } from "@/requests/getMe";
 import { useAuth } from "@/hooks/useAuth";
 import { getCurrentUserBillingPlan } from "@/requests/billing";
 import type { CurrentPlan } from "@/requests/billing";
-
+import { getMyAvatarUrl } from "@/requests/getMyAvatarUrl";
 
 import backIcon from "@/assets/icons/icon-navbar.svg";
 import chevronRight from "@/assets/icons/Chevron.svg";
@@ -117,14 +117,7 @@ export default function ProfileSettingsPage() {
         queryKey: ["my-avatar-url", !!accessToken],
         enabled: !!accessToken,
         staleTime: 60_000,
-        queryFn: async () => {
-            const res = await fetch("/api/client/avatar/url", {
-                headers: { Authorization: `Bearer ${accessToken}` },
-            });
-            if (!res.ok) return null;
-            const { url } = await res.json();
-            return url as string | null;
-        },
+        queryFn: () => getMyAvatarUrl(accessToken!),
     });
 
 
@@ -150,7 +143,6 @@ export default function ProfileSettingsPage() {
     const fullName = me?.full_name || me?.username || "—";
 
     const avatar = myAvatar ?? (me?.image_url?.startsWith("http") ? me.image_url : "/img/avatar-fallback.png");
-
     return (
         <Card className="home-card w-full max-w-[520px] h-full rounded-3xl shadow-2xl border-none overflow-hidden flex flex-col">
             {/* Header: back + centered title + logout */}

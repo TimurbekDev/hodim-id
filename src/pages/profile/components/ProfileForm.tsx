@@ -3,6 +3,8 @@ import type { IUserResponse } from "@/types/me";
 import InfoBanner from "./InfoBanner";
 import { useAuth } from "@/hooks/useAuth";
 import editPhoto from "@/assets/icons/edit-button.svg";
+import { api } from "@/api";
+// import avatarFallback from "@/assets/avatar-fallback.png"; // (Option B) use imported asset
 
 type Props = {
   me: IUserResponse;
@@ -23,6 +25,7 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
 
   const { accessToken } = useAuth();
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Fetch existing avatar URL
@@ -30,12 +33,15 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
     let ignore = false;
     (async () => {
       if (!accessToken) return;
-      const res = await fetch("/api/client/avatar/url", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      if (!res.ok) return;
-      const { url } = await res.json();
-      if (!ignore) setAvatarUrl(url ?? undefined);
+      try {
+        const { data } = await api.get<{ url: string | null }>("/client/avatar/url", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const url = data?.url ?? null;
+        if (!ignore) setAvatarUrl(url ?? undefined);
+      } catch {
+        // ignore
+      }
     })();
     return () => { ignore = true; };
   }, [accessToken]);
@@ -45,26 +51,43 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
     const file = ev.target.files?.[0];
     if (!file || !accessToken) return;
 
-    const form = new FormData();
-    form.append("file", file);
-
-    const res = await fetch("/api/client/avatar", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${accessToken}` },
-      body: form,
-    });
-    if (!res.ok) {
-      console.error("Avatar upload failed");
+    // Client-side validation (mirror server)
+    const allowed = ["image/png", "image/jpeg", "image/webp"];
+    if (!allowed.includes(file.type)) {
+      console.error("Unsupported content type");
+      return;
+    }
+    const maxBytes = 5 * 1024 * 1024; // 5 MB
+    if (file.size > maxBytes) {
+      console.error("File too large");
       return;
     }
 
-    // Refresh new URL (presigned)
-    const refresh = await fetch("/api/client/avatar/url", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    if (refresh.ok) {
-      const { url } = await refresh.json();
-      setAvatarUrl(url ?? undefined);
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+
+      const up = await api.post("/client/avatar", form, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (up.status < 200 || up.status >= 300) {
+        console.error("Avatar upload failed");
+        return;
+      }
+
+      // Refresh presigned URL and cache-bust so <img> updates immediately
+      const { data: refreshed } = await api.get<{ url: string | null }>("/client/avatar/url", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const fresh = refreshed?.url ?? undefined;
+      setAvatarUrl(fresh ? `${fresh}${fresh.includes("?") ? "&" : "?"}t=${Date.now()}` : undefined);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setUploading(false);
+      // reset input value so selecting the same file again will trigger onChange
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
@@ -72,7 +95,7 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
 
   const avatar =
     avatarUrl ??
-    (me.image_url?.startsWith("http") ? me.image_url : "/img/avatar-fallback.png");
+    (me.image_url?.startsWith("http") ? me.image_url : "/img/avatar-fallback.png"); // or avatarFallback
 
   return (
     <div className="w-full">
@@ -82,23 +105,23 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
           <img
             src={avatar}
             alt={fullName}
-            className="w-24 h-24 rounded-full object-cover border"
+            className={`w-24 h-24 rounded-full object-cover border transition-opacity ${uploading ? "opacity-60" : "opacity-100"}`}
           />
 
           {/* Overlay button */}
           <button
             type="button"
             onClick={openFileDialog}
-            className="absolute -bottom-1 -right-1 bg-white rounded-full shadow w-8 h-8 flex items-center justify-center border border-black/10"
+            disabled={uploading}
+            aria-label="Изменить фото"
+            className={`absolute -bottom-1 -right-1 bg-white rounded-full shadow w-8 h-8 flex items-center justify-center border border-black/10 ${uploading ? "opacity-60 cursor-not-allowed" : ""
+              }`}
           >
             <span
-              className="block w-8 h-8 bg-center bg-no-repeat bg-contain scale-150"
+              className="block w-8 h-8 bg-center bg-no-repeat bg-cover"
               style={{ backgroundImage: `url(${editPhoto})` }}
             />
           </button>
-
-
-
 
           {/* Hidden file input */}
           <input
