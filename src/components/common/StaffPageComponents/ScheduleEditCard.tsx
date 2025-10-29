@@ -83,7 +83,7 @@ const ScheduleEditCard: React.FC<ScheduleEditCardProps> = ({schedules}) => {
                         </List.Item>
                     )}>
                 </List>
-                {/* {<ScheduleModal isOpen={isModalOpen} handleClose={handleClose} /> } */}
+                {<ScheduleModal isOpen={isModalOpen} handleClose={handleClose} /> }
                 <Button 
                     onClick={handleClick}
                     className="w-full !h-11 !bg-gray-100 mb-2 !border-0 shadow-none">

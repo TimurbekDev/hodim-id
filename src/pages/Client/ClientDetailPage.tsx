@@ -1,5 +1,5 @@
 
-import React from "react"; 
+import React, { type SetStateAction } from "react"; 
 import { Avatar, Card } from "antd";
 import BackButton from "@/components/ui/BackButton";
 import { Button } from "@/components/ui";
@@ -116,7 +116,7 @@ const ClientDetailPage: React.FC = () =>{
                         )}
                     </div>
             </div>
-            <DisciplineCard />
+            <DisciplineCard organizationId={parsedOrgId as number} accessToken={accessToken as string} />
             <ScheduleEditCard schedules={client?.schedule}/>
             </div>
         </Card>
