@@ -112,6 +112,22 @@ export default function ProfileSettingsPage() {
         queryFn: () => getMe(accessToken!),
         enabled: !!accessToken,
     });
+
+    const { data: myAvatar } = useQuery({
+        queryKey: ["my-avatar-url", !!accessToken],
+        enabled: !!accessToken,
+        staleTime: 60_000,
+        queryFn: async () => {
+            const res = await fetch("/api/client/avatar/url", {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+            if (!res.ok) return null;
+            const { url } = await res.json();
+            return url as string | null;
+        },
+    });
+
+
     const userId = me?.id;
     // local UI state (you likely have a theme/lang store—these are placeholders)
     const [dark, setDark] = useState(false);
@@ -132,10 +148,8 @@ export default function ProfileSettingsPage() {
 
 
     const fullName = me?.full_name || me?.username || "—";
-    const avatar =
-        me?.image_url?.startsWith("http")
-            ? me.image_url
-                : "https://i.pravatar.cc/100?img=12";
+
+    const avatar = myAvatar ?? (me?.image_url?.startsWith("http") ? me.image_url : "/img/avatar-fallback.png");
 
     return (
         <Card className="home-card w-full max-w-[520px] h-full rounded-3xl shadow-2xl border-none overflow-hidden flex flex-col">

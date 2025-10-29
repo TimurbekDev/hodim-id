@@ -19,8 +19,8 @@ import { getRoles } from "@/requests/getRoles";
 
 const OrganizationPage: React.FC = () => {
     const { orgId } = useParams()
-    const [ selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-    const [ role, setRole] = useState<string>('Employee');
+    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+    const [role, setRole] = useState<string>('Employee');
     const { accessToken } = useAuth()
     const { setActivePopup } = usePopups()
 
@@ -28,10 +28,28 @@ const OrganizationPage: React.FC = () => {
         if (!orgId) {
             setActivePopup({ popup: Popups.POPUP_ORG_SELECT })
         }
-    }, [orgId,setActivePopup]);
+    }, [orgId, setActivePopup]);
 
     const parsedOrgId = orgId ? Number(orgId) : undefined
     const organizationId = Number.isFinite(parsedOrgId) ? (parsedOrgId as number) : undefined
+
+    const [myAvatarUrl, setMyAvatarUrl] = useState<string | undefined>();
+    useEffect(() => {
+        let ignore = false;
+        (async () => {
+            if (!accessToken) return;
+            const res = await fetch("/api/client/avatar/url", {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+            if (!res.ok) return;
+            const { url } = await res.json();
+            if (!ignore) setMyAvatarUrl(url ?? undefined);
+        })();
+        return () => { ignore = true; };
+    }, [accessToken]);
+
+
+
 
     const {
         data: organization,
@@ -45,13 +63,13 @@ const OrganizationPage: React.FC = () => {
                 token: accessToken as string
             })
         },
-        enabled: typeof organizationId === 'number' && !! accessToken,
+        enabled: typeof organizationId === 'number' && !!accessToken,
     });
 
-    const { data:organizationRoles} = useQuery({
-        queryKey:['getRoles',organizationId],
-        queryFn: async () => await getRoles({ token:accessToken as string, orgId: organizationId as number}),
-        enabled: typeof organizationId === 'number' && !! accessToken,
+    const { data: organizationRoles } = useQuery({
+        queryKey: ['getRoles', organizationId],
+        queryFn: async () => await getRoles({ token: accessToken as string, orgId: organizationId as number }),
+        enabled: typeof organizationId === 'number' && !!accessToken,
     })
 
     useEffect(() => {
@@ -101,34 +119,34 @@ const OrganizationPage: React.FC = () => {
             <div className="home-card-top shrink-0 p-2 flex flex-col">
                 <Header
                     avatarSrc={organization?.avatar || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTA75MqsVqzyE7GY65mw8TxzuRmEhSZHBG0Yz4RqnOu6nLYU2wr1xSPHtImuznevPqxKHI&usqp=CAU"}
-                    avatarRightSrc="https://i.pravatar.cc/100?img=12"
+                    avatarRightSrc={myAvatarUrl || "/img/avatar-fallback.png"}
                     name={organization?.name || "Загрузка..."}
                     branch={organization?.address || "Адрес не указан"}
                 />
 
                 <DatePills selected={selectedDate} onSelect={setSelectedDate} />
-                <RoleToggle 
-                    value={role} 
-                    onChange={setRole} 
-                    roles={organizationRoles?.map(orgRole => orgRole.role).filter((role, index, self) => self.indexOf(role) === index).reverse() || []} 
+                <RoleToggle
+                    value={role}
+                    onChange={setRole}
+                    roles={organizationRoles?.map(orgRole => orgRole.role).filter((role, index, self) => self.indexOf(role) === index).reverse() || []}
                 />
             </div>
 
             <div className="home-card-middle flex-1 min-h-0 px-4 pb-4 sm:px-5 sm:pb-5">
                 <div className="flex h-full min-h-0 flex-col gap-3">
-    
+
                     {role === "Employee" ? (
                         <div>
                             <ScheduleCard className="flex-1 min-h-0" />
                             <DisciplineCard className="flex-1 min-h-0" />
                         </div>
-                      
+
                     ) : (
                         <div className='flex flex-col h-full gap-3'>
-                            <BehaviourCard></BehaviourCard> 
-                            <StaffsCard organizationId={organizationId as number}/>
+                            <BehaviourCard></BehaviourCard>
+                            <StaffsCard organizationId={organizationId as number} />
                         </div>
-                        
+
                     )}
                 </div>
             </div>
