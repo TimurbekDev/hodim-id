@@ -3,7 +3,7 @@ import type { IUserResponse } from "@/types/me";
 import InfoBanner from "./InfoBanner";
 import { useAuth } from "@/hooks/useAuth";
 import editPhoto from "@/assets/icons/edit-button.svg";
-import { getMyAvatarUrl , uploadAvatar} from "@/requests/getMyAvatarUrl";
+import { getMyAvatarUrl, uploadAvatar } from "@/requests/getMyAvatarUrl";
 // import avatarFallback from "@/assets/avatar-fallback.png"; // (Option B) use imported asset
 
 type Props = {
@@ -29,22 +29,39 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Fetch existing avatar URL
+  const ran = useRef(false);
+
   useEffect(() => {
+    if (!accessToken || ran.current) return;
+    ran.current = true;
+
     let ignore = false;
     (async () => {
-      if (!accessToken) return;
       try {
         const url = await getMyAvatarUrl(accessToken);
         if (!ignore) setAvatarUrl(url ?? undefined);
-      } catch {/* ignore */ }
+      } catch { }
     })();
     return () => { ignore = true; };
   }, [accessToken]);
 
+
+  // Upload avatar
   // Upload avatar
   const handleFileChange = async (ev: React.ChangeEvent<HTMLInputElement>) => {
     const file = ev.target.files?.[0];
     if (!file || !accessToken) return;
+
+    // (optional) instant local preview while uploading
+    const revoke = () => { };
+    try {
+      const blobUrl = URL.createObjectURL(file);
+      setAvatarUrl(blobUrl);
+      // keep a revoker around
+      // NOTE: we'll revoke after we swap to the fresh presigned url
+      // (can't call URL.revokeObjectURL immediately)
+      (revoke as any) = () => URL.revokeObjectURL(blobUrl);
+    } catch { }
 
     // Client-side validation (mirror server)
     const allowed = ["image/png", "image/jpeg", "image/webp"];
@@ -60,16 +77,23 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
 
     setUploading(true);
     try {
-      const form = new FormData();
-      form.append("file", file);
-
       const ok = await uploadAvatar(file, accessToken);
       if (!ok) { console.error("Avatar upload failed"); return; }
+
+      // ⬇️ REFRESH THE PRESIGNED URL + CACHE-BUST
+      const fresh = await getMyAvatarUrl(accessToken);
+      const busted = fresh
+        ? `${fresh}${fresh.includes("?") ? "&" : "?"}t=${Date.now()}`
+        : undefined;
+      setAvatarUrl(busted);
+
+      // clean up the temporary blob preview
+      revoke();
     } catch (e) {
       console.error(e);
     } finally {
       setUploading(false);
-      // reset input value so selecting the same file again will trigger onChange
+      // reset input so picking the same file again fires onChange
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
