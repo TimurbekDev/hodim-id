@@ -67,7 +67,7 @@ const OrganizationPage: React.FC = () => {
             workTimeStatus: workTimeStatus as WorkTimeStatus
         }),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['work-time'] })
+            queryClient.invalidateQueries({ queryKey: ['work-time', 'discipline'] })
             if (workTimeStatus === WorkTimeStatus.not_arrived) {
                 message.success("Смена успешно начата");
             } else if (workTimeStatus === WorkTimeStatus.arrived_not_deported) {
