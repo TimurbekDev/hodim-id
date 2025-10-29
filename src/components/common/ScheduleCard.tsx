@@ -1,16 +1,23 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Card, Typography, Progress } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { getWorkTime } from '@/requests/getWorkTime';
 import { useAuth } from '@/hooks/useAuth';
+import { WorkTimeStatus, WorkTimeArrivalStatus, WorkTimeDepartureStatus } from '@/types/workTime';
 
 interface ScheduleCardProps {
     organizationId?: number;
     day?: Date;
     className?: string;
+    setWorkTimeStatus: (status: WorkTimeStatus | undefined) => void;
 }
 
-const ScheduleCard: React.FC<ScheduleCardProps> = ({ organizationId, day, className = '' }) => {
+const ScheduleCard: React.FC<ScheduleCardProps> = ({ 
+    organizationId, 
+    day, 
+    className = '', 
+    setWorkTimeStatus 
+}) => {
 
     const { accessToken } = useAuth()
 
@@ -29,6 +36,31 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ organizationId, day, classN
             }),
         enabled: Boolean(organizationId && queryDate),
     });
+
+    useEffect(() => {
+        if (!data) {
+            setWorkTimeStatus(undefined);
+            return;
+        }
+
+        const arrived =
+            data.arrival_status === WorkTimeArrivalStatus.AtWork ||
+            data.arrival_status === WorkTimeArrivalStatus.Late ||
+            Boolean(data.arrived_at);
+      
+        const departed =
+            data.departed_status === WorkTimeDepartureStatus.Worked ||
+            data.departed_status === WorkTimeDepartureStatus.LeftEarly ||
+            Boolean(data.departed_at);
+
+        if (arrived && departed) {
+            setWorkTimeStatus(WorkTimeStatus.arrived_and_deported);
+        } else if (arrived) {
+            setWorkTimeStatus(WorkTimeStatus.arrived_not_deported);
+        } else {
+            setWorkTimeStatus(WorkTimeStatus.not_arrived);
+        }
+    }, [data, setWorkTimeStatus]);
 
     const parseTime = (value?: string | null) => {
         if (!value) {
@@ -65,13 +97,128 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ organizationId, day, classN
         return null;
     };
 
+    const timeToMinutes = (timeStr: string): number => {
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        return hours * 60 + minutes;
+    };
+
+    const isToday = (date?: Date): boolean => {
+        if (!date) return false;
+        const today = new Date();
+        return date.toDateString() === today.toDateString();
+    };
+
     const formatTime = (value?: string | null, fallback = '-:-') => parseTime(value) ?? fallback;
 
     const start = formatTime(data?.start_time, '09:00');
     const end = formatTime(data?.end_time, '15:00');
     const checkIn = formatTime(data?.arrived_at);
     const checkOut = formatTime(data?.departed_at);
-    const percent = 0
+
+    // Calculate segmented progress
+    const progressSegments = useMemo(() => {
+        if (!data || !data.start_time || !data.end_time) {
+            return { percent: 0, strokeColor: '#d9d9d9' };
+        }
+
+        const startMinutes = timeToMinutes(formatTime(data.start_time, '09:00'));
+        const endMinutes = timeToMinutes(formatTime(data.end_time, '15:00'));
+        const totalWorkMinutes = endMinutes - startMinutes;
+
+        // If both arrived and departed
+        if (data.arrived_at && data.departed_at) {
+            const arrivedMinutes = timeToMinutes(formatTime(data.arrived_at));
+            const departedMinutes = timeToMinutes(formatTime(data.departed_at));
+
+            const lateMinutes = Math.max(0, arrivedMinutes - startMinutes);
+            const workedMinutes = departedMinutes - arrivedMinutes;
+            const earlyLeaveMinutes = Math.max(0, endMinutes - departedMinutes);
+
+            const latePercent = (lateMinutes / totalWorkMinutes) * 100;
+            const workedPercent = (workedMinutes / totalWorkMinutes) * 100;
+            const earlyLeavePercent = (earlyLeaveMinutes / totalWorkMinutes) * 100;
+
+            // Create gradient for segmented colors
+            const segments = [];
+            let currentPercent = 0;
+
+            if (latePercent > 0) {
+                segments.push(`#ff4d4f ${currentPercent}%`);
+                currentPercent += latePercent;
+                segments.push(`#ff4d4f ${currentPercent}%`);
+            }
+
+            if (workedPercent > 0) {
+                segments.push(`#52c41a ${currentPercent}%`);
+                currentPercent += workedPercent;
+                segments.push(`#52c41a ${currentPercent}%`);
+            }
+
+            if (earlyLeavePercent > 0) {
+                segments.push(`#ff4d4f ${currentPercent}%`);
+                currentPercent += earlyLeavePercent;
+                segments.push(`#ff4d4f ${currentPercent}%`);
+            }
+
+            return {
+                percent: 100,
+                strokeColor: segments.length > 2 ? `linear-gradient(to right, ${segments.join(', ')})` : '#52c41a'
+            };
+        }
+
+        // If only arrived (still working)
+        if (data.arrived_at && !data.departed_at) {
+            if (isToday(day)) {
+                const now = new Date();
+                const currentMinutes = now.getHours() * 60 + now.getMinutes();
+                const arrivedMinutes = timeToMinutes(formatTime(data.arrived_at));
+
+                const lateMinutes = Math.max(0, arrivedMinutes - startMinutes);
+                const workedMinutes = Math.max(0, currentMinutes - arrivedMinutes);
+
+                const latePercent = (lateMinutes / totalWorkMinutes) * 100;
+                const workedPercent = (workedMinutes / totalWorkMinutes) * 100;
+                const totalPercent = Math.min(100, latePercent + workedPercent);
+
+                if (latePercent > 0) {
+                    const segments = [
+                        `#ff4d4f 0%`,
+                        `#ff4d4f ${latePercent}%`,
+                        `#52c41a ${latePercent}%`,
+                        `#52c41a ${totalPercent}%`
+                    ];
+                    return {
+                        percent: totalPercent,
+                        strokeColor: `linear-gradient(to right, ${segments.join(', ')})`
+                    };
+                } else {
+                    return {
+                        percent: totalPercent,
+                        strokeColor: '#52c41a'
+                    };
+                }
+            } else {
+                return { percent: 50, strokeColor: '#52c41a' };
+            }
+        }
+
+        // If not arrived yet
+        if (!data.arrived_at && isToday(day)) {
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            
+            if (currentMinutes > startMinutes) {
+                const lateMinutes = currentMinutes - startMinutes;
+                const latePercent = Math.min(100, (lateMinutes / totalWorkMinutes) * 100);
+                return {
+                    percent: latePercent,
+                    strokeColor: '#ff4d4f'
+                };
+            }
+        }
+
+        return { percent: 0, strokeColor: '#d9d9d9' };
+    }, [data, day]);
 
     const statusText = useMemo(() => {
         if (!organizationId || !queryDate) {
@@ -107,7 +254,13 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ organizationId, day, classN
                     </Typography.Text>
 
                     <div className="mt-2 flex-1">
-                        <Progress percent={percent} showInfo={false} strokeLinecap="round" />
+                        <Progress 
+                            percent={Math.round(progressSegments.percent)} 
+                            showInfo={false} 
+                            strokeLinecap="round"
+                            strokeColor={progressSegments.strokeColor}
+                            trailColor="#f0f0f0"
+                        />
                         <div className="flex justify-end">
                             <Typography.Text className="text-[12px] text-gray-500 whitespace-nowrap sm:text-sm">
                                 {statusText}

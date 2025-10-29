@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card } from "antd";
+import { Card, message } from "antd";
 import { PlayCircleFilled } from "@ant-design/icons";
 import { Button, DatePills, RoleToggle } from "@/components/ui";
 import Header from "@/components/common/Header";
@@ -16,16 +16,18 @@ import BehaviourCard from "../components/common/BehaviourCard";
 import StaffsCard from "../components/common/StaffsCard";
 import { getRoles } from "@/requests/getRoles";
 import CameraCapture from "@/components/ui/Camera";
-import { arrive } from "@/requests/arrive";
+import { WorkTimeStatus } from "@/types/workTime";
+import { arriveAndDeparture } from "@/requests/arrive";
 
 
 const OrganizationPage: React.FC = () => {
     const { orgId } = useParams()
-    const [ selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-    const [ role, setRole] = useState<string>('Employee');
+    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+    const [role, setRole] = useState<string>('Employee');
     const { accessToken } = useAuth()
     const { setActivePopup } = usePopups()
     const [isOpen, setIsOpen] = useState(false);
+    const [workTimeStatus,setWorkTimeStatus] = useState<WorkTimeStatus | undefined>()
 
     React.useEffect(() => {
         if (!orgId) {
@@ -36,29 +38,90 @@ const OrganizationPage: React.FC = () => {
     const parsedOrgId = orgId ? Number(orgId) : undefined
     const organizationId = Number.isFinite(parsedOrgId) ? (parsedOrgId as number) : undefined
 
+    const [myAvatarUrl, setMyAvatarUrl] = useState<string | undefined>();
+    useEffect(() => {
+        let ignore = false;
+        (async () => {
+            if (!accessToken) return;
+            const res = await fetch("/api/client/avatar/url", {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+            if (!res.ok) return;
+            const { url } = await res.json();
+            if (!ignore) setMyAvatarUrl(url ?? undefined);
+        })();
+        return () => { ignore = true; };
+    }, [accessToken]);
+
+
+
     const queryClient = useQueryClient()
     const mutation = useMutation({
-        mutationFn: async ({ arrivalImage, longitude, latitude }: {
-            arrivalImage: string
+        mutationFn: async ({ image, longitude, latitude }: {
+            image: string
             longitude: number
             latitude: number
-        }) => await arrive({
+        }) => await arriveAndDeparture({
             token: accessToken as string,
             organizationClientId: organizationId as number,
-            arrivalImage,
+            image,
             longitude,
-            latitude
+            latitude,
+            workTimeStatus: workTimeStatus as WorkTimeStatus
         }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['work-time'] })
+            if (workTimeStatus === WorkTimeStatus.not_arrived) {
+                message.success("Смена успешно начата");
+            } else if (workTimeStatus === WorkTimeStatus.arrived_not_deported) {
+                message.success("Смена успешно завершена");
+            }
+        },
+        onError: (error: any) => {
+            console.error('Ошибка при отметке времени:', error);
+            
+            if (workTimeStatus === WorkTimeStatus.not_arrived) {
+                message.error("Не удалось начать смену. Попробуйте снова.");
+            } else if (workTimeStatus === WorkTimeStatus.arrived_not_deported) {
+                message.error("Не удалось завершить смену. Попробуйте снова.");
+            } else {
+                message.error("Произошла ошибка при отметке времени");
+            }
         }
     })
-    const handleCapture = (img: string) => {
-        mutation.mutate({
-            arrivalImage: img,
-            latitude: 111,
-            longitude: 111
-        })
+    const handleCapture = (image: string) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    mutation.mutate({
+                        image,
+                        latitude: latitude,
+                        longitude: longitude
+                    });
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                    mutation.mutate({
+                        image,
+                        latitude: 0,
+                        longitude: 0
+                    });
+                    alert('Не удалось получить местоположение. Используются координаты по умолчанию.');
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 60000
+                }
+            );
+        } else {
+            mutation.mutate({
+                image,
+                latitude: 0,
+                longitude: 0
+            });
+        }
     };
 
     const {
@@ -90,6 +153,13 @@ const OrganizationPage: React.FC = () => {
             }
         }
     }, [organizationRoles, role]);
+
+    // Add this helper function to check if selected date is today
+    const isToday = (date: Date | null): boolean => {
+        if (!date) return false;
+        const today = new Date();
+        return date.toDateString() === today.toDateString();
+    };
 
     if (isLoading) {
         return (
@@ -129,7 +199,7 @@ const OrganizationPage: React.FC = () => {
             <div className="home-card-top shrink-0 p-2 flex flex-col">
                 <Header
                     avatarSrc={organization?.avatar || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTA75MqsVqzyE7GY65mw8TxzuRmEhSZHBG0Yz4RqnOu6nLYU2wr1xSPHtImuznevPqxKHI&usqp=CAU"}
-                    avatarRightSrc="https://i.pravatar.cc/100?img=12"
+                    avatarRightSrc={myAvatarUrl || "/img/avatar-fallback.png"}
                     name={organization?.name || "Загрузка..."}
                     branch={organization?.address || "Адрес не указан"}
                 />
@@ -147,8 +217,13 @@ const OrganizationPage: React.FC = () => {
 
                     {role === "Employee" ? (
                         <div>
-                            <ScheduleCard day={selectedDate as Date} organizationId={organizationId} className="flex-1 min-h-0" />
-                            <DisciplineCard className="flex-1 min-h-0" />
+                            <ScheduleCard 
+                                day={selectedDate as Date} 
+                                organizationId={organizationId} 
+                                setWorkTimeStatus={setWorkTimeStatus}
+                                className="flex-1 min-h-0" 
+                            />
+                            <DisciplineCard className="flex-1 min-h-0 mt-3!" />
                         </div>
 
                     ) : (
@@ -160,12 +235,13 @@ const OrganizationPage: React.FC = () => {
                     )}
                 </div>
             </div>
-            {role === "Employee" &&
+            {(role === "Employee" && workTimeStatus != WorkTimeStatus.arrived_and_deported && isToday(selectedDate)) &&
                 <div className="home-card-bottom shrink-0 p-4 sm:p-5" onClick={() => setIsOpen(true)}>
                     <Button
                         className="home-cta w-full !h-[clamp(48px,12vw,56px)] !px-5 text-base sm:!px-6 sm:text-lg"
                         Icon={<PlayCircleFilled />}>
-                        Начать смену
+                        { workTimeStatus == WorkTimeStatus.not_arrived && "Начать смену"}
+                        { workTimeStatus == WorkTimeStatus.arrived_not_deported && "Закрыть смену"}
                     </Button>
                 </div>
             }
