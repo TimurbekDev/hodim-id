@@ -65,9 +65,6 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
 
       const ok = await uploadAvatar(file, accessToken);
       if (!ok) { console.error("Avatar upload failed"); return; }
-
-      // Refresh presigned URL and cache-bust so <img> updates immediately
-      const fresh = (await getMyAvatarUrl(accessToken)) ?? undefined;
     } catch (e) {
       console.error(e);
     } finally {
