@@ -19,8 +19,13 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose, sche
         4: "Thursday", 5: "Friday", 6: "Saturday", 7: "Sunday"
     }
     
-    const { orgId } = useParams()
+    const { orgId, clientId } = useParams()
     const parsedOrgId = orgId ? Number(orgId) : undefined
+    const parsedClientId = clientId ? Number(clientId) : undefined
+
+console.log(clientId)
+console.log(parsedClientId)
+
     const { accessToken } = useAuth()
     const [name, setName] = useState(schedule?.name ?? "График 1")
     const [startTime, setStartTime] = useState(
@@ -72,7 +77,8 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose, sche
             startTime: `${startTime}:00`,
             endTime: `${endTime}:00`,
             workDays: selectedDays,
-            id: schedule?.id
+            id: schedule?.id,
+            client_id: parsedClientId as number
         }
 
         console.log(payload)

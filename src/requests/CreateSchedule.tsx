@@ -6,6 +6,7 @@ interface CreateSchedulePayload {
     endTime: string
     workDays: number[]
     id?: number
+    client_id: number
 }
 
 export type IProps = {
