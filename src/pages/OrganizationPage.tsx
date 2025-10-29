@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getMyAvatarUrl } from "@/requests/getMyAvatarUrl";
 import { Card, message } from "antd";
 import { PlayCircleFilled } from "@ant-design/icons";
 import { Button, DatePills, RoleToggle } from "@/components/ui";
@@ -27,7 +28,7 @@ const OrganizationPage: React.FC = () => {
     const { accessToken } = useAuth()
     const { setActivePopup } = usePopups()
     const [isOpen, setIsOpen] = useState(false);
-    const [workTimeStatus,setWorkTimeStatus] = useState<WorkTimeStatus | undefined>()
+    const [workTimeStatus, setWorkTimeStatus] = useState<WorkTimeStatus | undefined>()
 
     React.useEffect(() => {
         if (!orgId) {
@@ -43,11 +44,7 @@ const OrganizationPage: React.FC = () => {
         let ignore = false;
         (async () => {
             if (!accessToken) return;
-            const res = await fetch("/api/client/avatar/url", {
-                headers: { Authorization: `Bearer ${accessToken}` },
-            });
-            if (!res.ok) return;
-            const { url } = await res.json();
+            const url = await getMyAvatarUrl(accessToken);
             if (!ignore) setMyAvatarUrl(url ?? undefined);
         })();
         return () => { ignore = true; };
@@ -79,7 +76,7 @@ const OrganizationPage: React.FC = () => {
         },
         onError: (error: any) => {
             console.error('Ошибка при отметке времени:', error);
-            
+
             if (workTimeStatus === WorkTimeStatus.not_arrived) {
                 message.error("Не удалось начать смену. Попробуйте снова.");
             } else if (workTimeStatus === WorkTimeStatus.arrived_not_deported) {
@@ -217,11 +214,11 @@ const OrganizationPage: React.FC = () => {
 
                     {role === "Employee" ? (
                         <div>
-                            <ScheduleCard 
-                                day={selectedDate as Date} 
-                                organizationId={organizationId} 
+                            <ScheduleCard
+                                day={selectedDate as Date}
+                                organizationId={organizationId}
                                 setWorkTimeStatus={setWorkTimeStatus}
-                                className="flex-1 min-h-0" 
+                                className="flex-1 min-h-0"
                             />
                             <DisciplineCard className="flex-1 min-h-0 mt-3!" />
                         </div>
@@ -240,8 +237,8 @@ const OrganizationPage: React.FC = () => {
                     <Button
                         className="home-cta w-full !h-[clamp(48px,12vw,56px)] !px-5 text-base sm:!px-6 sm:text-lg"
                         Icon={<PlayCircleFilled />}>
-                        { workTimeStatus == WorkTimeStatus.not_arrived && "Начать смену"}
-                        { workTimeStatus == WorkTimeStatus.arrived_not_deported && "Закрыть смену"}
+                        {workTimeStatus == WorkTimeStatus.not_arrived && "Начать смену"}
+                        {workTimeStatus == WorkTimeStatus.arrived_not_deported && "Закрыть смену"}
                     </Button>
                 </div>
             }
