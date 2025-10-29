@@ -23,3 +23,10 @@ export interface Discipline {
   absent: number
   left_early: number
 }
+
+export interface ScheduleCreate{
+  organizationId: number
+  startTime: string
+  endTime: string
+  workDays: number[]
+}

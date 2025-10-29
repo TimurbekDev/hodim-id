@@ -11,7 +11,7 @@ const LoginPage: React.FC = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
 
-  const userId = new URLSearchParams(search).get('userId');
+  const userId = search ? new URLSearchParams(search).get('userId') : null;
 
   useEffect(() => {
     // ✅ If already authorized — skip login
