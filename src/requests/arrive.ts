@@ -42,7 +42,7 @@ export const arriveAndDeparture = async ({
     formData.append("latitude", latitude.toString())
 
     if(workTimeStatus == WorkTimeStatus.not_arrived)
-        return api.post("/work-times/arrive", formData, { headers })
+        return await api.post("/work-times/arrive", formData, { headers })
     else if(workTimeStatus == WorkTimeStatus.arrived_not_deported)
-        return api.post("/work-times/departure", formData, { headers })
+        return await api.post("/work-times/departure", formData, { headers })
 }

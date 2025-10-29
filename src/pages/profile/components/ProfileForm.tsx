@@ -3,7 +3,7 @@ import type { IUserResponse } from "@/types/me";
 import InfoBanner from "./InfoBanner";
 import { useAuth } from "@/hooks/useAuth";
 import editPhoto from "@/assets/icons/edit-button.svg";
-import { api } from "@/api";
+import { getMyAvatarUrl , uploadAvatar} from "@/requests/getMyAvatarUrl";
 // import avatarFallback from "@/assets/avatar-fallback.png"; // (Option B) use imported asset
 
 type Props = {
@@ -34,14 +34,9 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
     (async () => {
       if (!accessToken) return;
       try {
-        const { data } = await api.get<{ url: string | null }>("/client/avatar/url", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        const url = data?.url ?? null;
+        const url = await getMyAvatarUrl(accessToken);
         if (!ignore) setAvatarUrl(url ?? undefined);
-      } catch {
-        // ignore
-      }
+      } catch {/* ignore */ }
     })();
     return () => { ignore = true; };
   }, [accessToken]);
@@ -68,20 +63,11 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
       const form = new FormData();
       form.append("file", file);
 
-      const up = await api.post("/client/avatar", form, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      if (up.status < 200 || up.status >= 300) {
-        console.error("Avatar upload failed");
-        return;
-      }
+      const ok = await uploadAvatar(file, accessToken);
+      if (!ok) { console.error("Avatar upload failed"); return; }
 
       // Refresh presigned URL and cache-bust so <img> updates immediately
-      const { data: refreshed } = await api.get<{ url: string | null }>("/client/avatar/url", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      const fresh = refreshed?.url ?? undefined;
-      setAvatarUrl(fresh ? `${fresh}${fresh.includes("?") ? "&" : "?"}t=${Date.now()}` : undefined);
+      const fresh = (await getMyAvatarUrl(accessToken)) ?? undefined;
     } catch (e) {
       console.error(e);
     } finally {
