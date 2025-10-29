@@ -86,6 +86,7 @@ const OrganizationPage: React.FC = () => {
             }
         }
     })
+
     const handleCapture = (image: string) => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -151,7 +152,7 @@ const OrganizationPage: React.FC = () => {
         }
     }, [organizationRoles, role]);
 
-    // Add this helper function to check if selected date is today
+
     const isToday = (date: Date | null): boolean => {
         if (!date) return false;
         const today = new Date();
@@ -220,7 +221,7 @@ const OrganizationPage: React.FC = () => {
                                 setWorkTimeStatus={setWorkTimeStatus}
                                 className="flex-1 min-h-0"
                             />
-                            <DisciplineCard className="flex-1 min-h-0 mt-3!" />
+                            <DisciplineCard organizationId={parsedOrgId as number} accessToken={accessToken as string} className="flex-1 min-h-0 mt-3!" />
                         </div>
 
                     ) : (

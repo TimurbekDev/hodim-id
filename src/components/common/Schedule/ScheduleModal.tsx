@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Switch } from "antd"
-import { createSchedule, type IProps } from "@/requests/CreateSchedule";
+import { createSchedule, updateSchedule, type IProps } from "@/requests/CreateSchedule";
 import { Button } from "@/components/ui";
 import { useAuth } from "@/hooks/useAuth";
 import { useParams } from "react-router-dom";
@@ -52,7 +52,12 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose, sche
     const queryClient = useQueryClient()
 
     const mutation = useMutation({
-        mutationFn: async (data: IProps) => await createSchedule(data),
+        mutationFn: async (data: IProps) => {
+            if(data.payload.id){
+                return await updateSchedule(data.payload, data.token)
+            }
+            return await createSchedule(data)
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['ClientSchedule'] })
             console.log("invalidated")
@@ -68,21 +73,16 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose, sche
             startTime: `${startTime}:00`,
             endTime: `${endTime}:00`,
             workDays: selectedDays,
+            id: schedule?.id
         }
 
-        if (schedule?.id) {
-            mutation.mutate({
-                payload: { ...payload, id: schedule.id },
-                token: accessToken as string,
-                organizationId: parsedOrgId as number,
-            })
-        } else {
-            mutation.mutate({
-                payload,
-                token: accessToken as string,
-                organizationId: parsedOrgId as number
-            })
-        }
+        console.log(payload)
+
+        mutation.mutate({
+            payload,
+            token: accessToken as string,
+            organizationId: parsedOrgId as number
+        })
 
         handleClose()
     }
@@ -102,6 +102,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose, sche
             <div className="flex flex-col gap-1 items-end py-10">
                 <div className="flex flex-col gap-6 w-full">
                     <div className="flex flex-col gap-6">
+        
                         <input
                             type="text"
                             value={name}
