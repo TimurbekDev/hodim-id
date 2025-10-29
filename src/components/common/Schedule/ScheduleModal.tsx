@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { Modal, Switch } from "antd"
 import BackButton from "@/components/ui/BackButton";
-import { createSchedule } from "@/requests/CreateSchedule";
+import { createSchedule, type IProps } from "@/requests/CreateSchedule";
+import { Button } from "@/components/ui";
+import { useAuth } from "@/hooks/useAuth";
+import { useParams } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ScheduleModalProps {
     isOpen: boolean;
@@ -14,7 +18,10 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose }) =>
         4: "Thursday", 5: "Friday", 6: "Saturday", 7: "Sunday"
     }
 
-
+    
+    const { orgId } = useParams()
+    const parsedOrgId = orgId ? Number(orgId) : undefined
+    const { accessToken } = useAuth()
     const [name, setName] = useState("График 1")
     const [startTime, setStartTime] = useState("09:00:00")
     const [endTime, setEndTime] = useState("18:00:00")
@@ -26,29 +33,51 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose }) =>
         )
     }
 
-    const handleSubmit = async () => {
-        try {
-            const token = localStorage.getItem("token") || ""
-            const payload = {
-                organizationUserId: 2,
-                startTime,
-                endTime,
-                workDays: selectedDays
-            }
+    const queryClient = useQueryClient()
 
-            const res = await createSchedule(payload, token)
-            console.log("Schedule created:", res)
-            handleClose()
-        } catch (err) {
-            console.error("Error creating schedule:", err)
+    const mutation = useMutation({
+        mutationFn: async (data: IProps) => await createSchedule(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['ClientSchedule'] })
+            console.log("invalidated")
+        },
+        onError: () => {
+            console.log("invalidated err")
         }
+    })
+    const handleSubmit = async () => {
+        const payload = {
+            startTime,
+            endTime,
+            name,
+            workDays: selectedDays
+        }
+
+        mutation.mutate({
+            payload,
+            token: accessToken as string,
+            organizationId: parsedOrgId as number
+        })
+        handleClose()
     }
 
 
 
-
     return (
-        <Modal open={isOpen} footer={null} onCancel={handleClose}>
+        <Modal 
+            open={isOpen}
+            footer={null}
+            onCancel={handleClose}
+            width="100vw"
+            styles =
+            {
+                { body: 
+                    { 
+                        height: "100vh" 
+                    } 
+                }
+            }
+        >
             <div className="flex flex-col gap-6">
                 <BackButton isX />
 
@@ -87,13 +116,9 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose }) =>
                     )
                 })}
 
-                <button
-                    onClick={handleSubmit}
-                    className="bg-blue-600 text-white rounded-lg py-3"
-                >
-                    Создать
-                </button>
+                <Button title="create" onClick={handleSubmit} className="w-full"/>
             </div>
+            
         </Modal>
     )
 }
