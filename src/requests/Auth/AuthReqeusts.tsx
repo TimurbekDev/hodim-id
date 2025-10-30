@@ -7,6 +7,7 @@ import { getHeaderToken } from "@/utils/getHeaderToken"
 interface ArriveProps {
     token: string
     image: string
+    workTimeId: number
     organizationClientId: number
     longitude: number
     latitude: number
@@ -31,6 +32,7 @@ export const arriveAndDeparture = async ({
     organizationClientId,
     longitude,
     latitude,
+    workTimeId,
     workTimeStatus
 }: ArriveProps) => {
     const headers = getHeaderToken(token)
@@ -42,6 +44,7 @@ export const arriveAndDeparture = async ({
     formData.append("organizationClientId", organizationClientId.toString())
     formData.append("longitude", longitude.toString())
     formData.append("latitude", latitude.toString())
+    formData.append("workTimeId", workTimeId.toString())
 
     if(workTimeStatus == WorkTimeStatus.not_arrived)
         return await api.post("/work-times/arrive", formData, { headers })

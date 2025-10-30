@@ -9,13 +9,15 @@ interface ScheduleCardProps {
     organizationId?: number;
     day?: Date;
     className?: string;
+    setWorkTimeId: (workTimeId: number | undefined) => void;
     setWorkTimeStatus: (status: WorkTimeStatus | undefined) => void;
 }
 
 const ScheduleCard: React.FC<ScheduleCardProps> = ({ 
     organizationId, 
     day, 
-    className = '', 
+    className = '',
+    setWorkTimeId, 
     setWorkTimeStatus 
 }) => {
 
@@ -60,6 +62,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
         } else {
             setWorkTimeStatus(WorkTimeStatus.not_arrived);
         }
+        setWorkTimeId(data.id)
     }, [data, setWorkTimeStatus]);
 
     const parseTime = (value?: string | null) => {

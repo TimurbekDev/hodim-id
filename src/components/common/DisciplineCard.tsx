@@ -41,7 +41,7 @@ const DisciplineCard: React.FC<DisciplineCardProps> = ({ className = '', organiz
                         <Typography.Text className="text-sm font-semibold text-gray-900 sm:text-base">{data?.discipline}%</Typography.Text>
                     </div>
                     <Typography.Text className="mt-1 block text-xs text-gray-400 sm:mt-2 sm:text-sm">За август</Typography.Text>
-                    <Progress percent={data?.discipline} showInfo={false} strokeColor={{ '0%': '#20d789', '100%': '#ff4d4f' }} strokeLinecap="round" className="!mt-3 sm:!mt-4" />
+                    <Progress percent={data?.discipline} showInfo={false} size={[330, 20]} strokeColor={{ '0%': '#20d789', '100%': '#ff4d4f' }} strokeLinecap="round" className="!mt-3 sm:!mt-4" />
                 </div>
 
                 <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-gray-500 sm:mt-4 sm:text-sm">

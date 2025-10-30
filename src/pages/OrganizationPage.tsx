@@ -29,6 +29,8 @@ const OrganizationPage: React.FC = () => {
     const { setActivePopup } = usePopups()
     const [isOpen, setIsOpen] = useState(false);
     const [workTimeStatus, setWorkTimeStatus] = useState<WorkTimeStatus | undefined>()
+    const [workTimeId, setWorkTimeId] = useState<number | undefined>()
+
 
     React.useEffect(() => {
         if (!orgId) {
@@ -50,8 +52,6 @@ const OrganizationPage: React.FC = () => {
         return () => { ignore = true; };
     }, [accessToken]);
 
-
-
     const queryClient = useQueryClient()
     const mutation = useMutation({
         mutationFn: async ({ image, longitude, latitude }: {
@@ -64,6 +64,7 @@ const OrganizationPage: React.FC = () => {
             image,
             longitude,
             latitude,
+            workTimeId: workTimeId as number,
             workTimeStatus: workTimeStatus as WorkTimeStatus
         }),
         onSuccess: () => {
@@ -212,13 +213,13 @@ const OrganizationPage: React.FC = () => {
 
             <div className="home-card-middle flex-1 min-h-0 px-4 pb-4 sm:px-5 sm:pb-5">
                 <div className="flex h-full min-h-0 flex-col gap-3">
-
                     {role === "Employee" ? (
                         <div>
                             <ScheduleCard
                                 day={selectedDate as Date}
                                 organizationId={organizationId}
                                 setWorkTimeStatus={setWorkTimeStatus}
+                                setWorkTimeId={setWorkTimeId}
                                 className="flex-1 min-h-0"
                             />
                             <DisciplineCard organizationId={parsedOrgId as number} accessToken={accessToken as string} className="flex-1 min-h-0 mt-3!" />
