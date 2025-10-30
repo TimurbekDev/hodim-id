@@ -6,7 +6,7 @@ import { Button } from "@/components/ui";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { getClientSchedule } from "@/requests/getClientSchedule";
+import { getClientSchedule } from "@/requests/Schedule/ScheduleRequests";
 import DisciplineCard from "@/components/common/DisciplineCard";
 import ScheduleEditCard from "@/components/common/StaffPageComponents/ScheduleEditCard";
 
@@ -20,9 +20,6 @@ const ClientDetailPage: React.FC = () =>{
     const organizationId = Number.isFinite(parsedOrgId) ? (parsedOrgId as number) : undefined
     const clId = Number.isFinite(parsedClientId) ? (parsedClientId as number) : undefined
 
-
-    console.log(`orgId: ${orgId}`)
-    console.log(`clientId ${clId}`)
     const {
             data: client,
             isLoading,

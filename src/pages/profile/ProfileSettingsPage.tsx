@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Card, Switch } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getMe } from "@/requests/getMe";
+import { getMe } from "@/requests/Auth/AuthReqeusts";
 import { useAuth } from "@/hooks/useAuth";
-import { getCurrentUserBillingPlan } from "@/requests/billing";
-import type { CurrentPlan } from "@/requests/billing";
-import { getMyAvatarUrl } from "@/requests/getMyAvatarUrl";
+import { getCurrentUserBillingPlan } from "@/requests/Billing/billing";
+import type { CurrentPlan } from "@/requests/Billing/billing";
+import { getMyAvatarUrl } from "@/requests/Client/ClientReqeusts";
 
 import backIcon from "@/assets/icons/icon-navbar.svg";
 import chevronRight from "@/assets/icons/Chevron.svg";

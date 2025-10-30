@@ -2,6 +2,7 @@ import { Button } from "@/components/ui";
 import type { Schedule } from "@/types/client-detail";
 import { Card, List } from "antd";
 import pen from "@/assets/icons/pen.svg";
+import trash from "@/assets/icons/trash-solid.svg";
 import ScheduleModal from "../Schedule/ScheduleModal";
 import { useState } from "react";
 
@@ -46,15 +47,22 @@ const ScheduleEditCard: React.FC<ScheduleEditCardProps> = ({schedules}) => {
                                     <p className="font-medium text-xl truncate overflow-hidden whitespace-nowrap">
                                         {item.name}
                                     </p>
-                                    <Button
-                                        className="w-9 !h-9 !bg-gray-200 !border-0 !p-0"
-                                        onClick={() => {
-                                            setSelectedSchedule(item);
-                                            setIsModalOpen(true);
-                                        }}
-                                    >
-                                        <img src={pen} width={24} height={24} />
-                                    </Button>
+                                    <div className="flex gap-2">
+                                        <Button
+                                            className="w-9 !h-9 !bg-gray-200 !border-0 !p-0"
+                                            onClick={() => {
+                                                setSelectedSchedule(item);
+                                                setIsModalOpen(true);
+                                            }}
+                                        >
+                                            <img src={pen} width={24} height={24} />
+                                        </Button>
+                                        <Button
+                                            className="w-9 !h-9 !bg-gray-200 !border-0 !p-2.5"
+                                        >
+                                            <img src={trash} width={24} height={24}/>
+                                        </Button>
+                                    </div>
                                 </div>
                                 <div className="flex flex-col gap-4">
                                     <div>

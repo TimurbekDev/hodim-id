@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Switch } from "antd"
-import { createSchedule, updateSchedule, type IProps } from "@/requests/CreateSchedule";
+import { createSchedule, updateSchedule, type IProps } from "@/requests/Schedule/ScheduleRequests";
 import { Button } from "@/components/ui";
 import { useAuth } from "@/hooks/useAuth";
 import { useParams } from "react-router-dom";
@@ -23,8 +23,8 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({ isOpen, handleClose, sche
     const parsedOrgId = orgId ? Number(orgId) : undefined
     const parsedClientId = clientId ? Number(clientId) : undefined
 
-console.log(clientId)
-console.log(parsedClientId)
+    console.log(clientId)
+    console.log(parsedClientId)
 
     const { accessToken } = useAuth()
     const [name, setName] = useState(schedule?.name ?? "График 1")
@@ -86,7 +86,7 @@ console.log(parsedClientId)
         mutation.mutate({
             payload,
             token: accessToken as string,
-            organizationId: parsedOrgId as number
+            orgId: parsedOrgId as number,
         })
 
         handleClose()

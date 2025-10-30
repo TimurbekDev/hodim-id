@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getMyAvatarUrl } from "@/requests/getMyAvatarUrl";
+import { getMyAvatarUrl } from "@/requests/Client/ClientReqeusts";
 import { Card, message } from "antd";
 import { PlayCircleFilled } from "@ant-design/icons";
 import { Button, DatePills, RoleToggle } from "@/components/ui";
@@ -8,17 +8,17 @@ import ScheduleCard from "@/components/common/ScheduleCard";
 import DisciplineCard from "../components/common/DisciplineCard";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getOrganization } from "../requests/getOrganization";
+import { getOrganization } from "@/requests/Organization/OrganizationRequests";
 import { useAuth } from "../hooks/useAuth";
 import { usePopups } from "../store/usePopups";
 import { Popups } from "../utils/popups";
 import SelectOrganizationPopup from "../components/common/Popups/SelectOrganizationPopup";
 import BehaviourCard from "../components/common/BehaviourCard";
 import StaffsCard from "../components/common/StaffsCard";
-import { getRoles } from "@/requests/getRoles";
+import { getRoles } from "@/requests/Client/ClientReqeusts";
 import CameraCapture from "@/components/ui/Camera";
 import { WorkTimeStatus } from "@/types/workTime";
-import { arriveAndDeparture } from "@/requests/arrive";
+import { arriveAndDeparture } from "@/requests/Auth/AuthReqeusts";
 
 
 const OrganizationPage: React.FC = () => {
@@ -139,7 +139,7 @@ const OrganizationPage: React.FC = () => {
 
     const { data: organizationRoles } = useQuery({
         queryKey: ['getRoles', organizationId],
-        queryFn: async () => await getRoles({ token: accessToken as string, orgId: organizationId as number }),
+        queryFn: async () => await getRoles({ token: accessToken as string, organizationId: organizationId as number }),
         enabled: typeof organizationId === 'number' && !!accessToken,
     })
 

@@ -3,7 +3,7 @@ import type { IUserResponse } from "@/types/me";
 import InfoBanner from "./InfoBanner";
 import { useAuth } from "@/hooks/useAuth";
 import editPhoto from "@/assets/icons/edit-button.svg";
-import { getMyAvatarUrl, uploadAvatar } from "@/requests/getMyAvatarUrl";
+import { getMyAvatarUrl, uploadAvatar } from "@/requests/Client/ClientReqeusts";
 // import avatarFallback from "@/assets/avatar-fallback.png"; // (Option B) use imported asset
 
 type Props = {

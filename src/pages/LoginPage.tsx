@@ -1,7 +1,7 @@
 import { Flex, Spin, Typography } from 'antd';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { login } from '../requests/login';
+import { login } from '@/requests/Auth/AuthReqeusts';
 import { useAuth } from '../hooks/useAuth';
 
 const { Text } = Typography;

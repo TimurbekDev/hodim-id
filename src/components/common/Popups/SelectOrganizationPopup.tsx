@@ -4,7 +4,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import { usePopups } from "../../../store/usePopups";
 import { Popups } from "../../../utils/popups";
 import { useQuery } from '@tanstack/react-query';
-import { getOrganizations } from "../../../requests/getOrganizations";
+import { getOrganizations } from "@/requests/Organization/OrganizationRequests";
 import { useAuth } from "../../../hooks/useAuth";
 import { useNavigate } from 'react-router-dom';
 

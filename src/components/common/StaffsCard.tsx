@@ -2,7 +2,7 @@ import { Button, Card, List} from 'antd';
 import { useAuth } from '../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 
-import { getClients } from '@/requests/getClients';
+import { getClients } from '@/requests/Client/ClientReqeusts';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 

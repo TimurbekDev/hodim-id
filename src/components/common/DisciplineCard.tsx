@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Typography, Progress } from 'antd';
 import { useQuery } from '@tanstack/react-query';
-import { getDiscipline } from '@/requests/getDiscipline';
+import { getDiscipline } from '@/requests/Client/ClientReqeusts';
 
 interface DisciplineCardProps {
     className?: string;

@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect } from 'react';
 import { Card, Typography, Progress } from 'antd';
 import { useQuery } from '@tanstack/react-query';
-import { getWorkTime } from '@/requests/getWorkTime';
+import { getWorkTime } from '@/requests/WorkTime/WorkTimeRequests';
 import { useAuth } from '@/hooks/useAuth';
 import { WorkTimeStatus, WorkTimeArrivalStatus, WorkTimeDepartureStatus } from '@/types/workTime';
 

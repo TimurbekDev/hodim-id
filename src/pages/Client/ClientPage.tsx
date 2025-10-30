@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from "react-router-dom";
 import { Spin, Alert } from "antd";
-import { getClients } from '@/requests/getClients';
+import { getClients } from '@/requests/Client/ClientReqeusts';
 
 const ClientPage: React.FC = () => {
     const { accessToken } = useAuth()

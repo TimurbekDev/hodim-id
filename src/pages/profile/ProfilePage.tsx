@@ -1,6 +1,6 @@
 import { Card } from "antd";
 import { useQuery } from "@tanstack/react-query";
-import { getMe } from "@/requests/getMe";
+import { getMe } from "@/requests/Auth/AuthReqeusts";
 import PhotoGuidelinesModal from "./components/PhotoGuidelinesModal";
 import ProfileForm from "./components/ProfileForm";
 import { useNavigate } from "react-router-dom";

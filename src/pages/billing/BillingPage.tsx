@@ -19,7 +19,7 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 
-import type { CurrentPlan } from "@/requests/billing";
+import type { CurrentPlan } from "@/requests/Billing/billing";
 
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -29,7 +29,7 @@ import {
   setAutopay,
   makeInvoice,
   getCurrentUserBillingPlan,
-} from "@/requests/billing";
+} from "@/requests/Billing/billing";
 import type {
   AnalyticsTransactionType as TxnType,
   AnalyticsEntry,

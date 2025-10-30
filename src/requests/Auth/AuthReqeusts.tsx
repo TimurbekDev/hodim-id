@@ -1,4 +1,6 @@
 import { api } from "@/api"
+import type { ILoginResponse } from "@/types/auth"
+import type { IUserResponse } from "@/types/me"
 import { WorkTimeStatus } from "@/types/workTime"
 import { getHeaderToken } from "@/utils/getHeaderToken"
 
@@ -46,3 +48,26 @@ export const arriveAndDeparture = async ({
     else if(workTimeStatus == WorkTimeStatus.arrived_not_deported)
         return await api.post("/work-times/departure", formData, { headers })
 }
+
+export const login = async (userId: number) => {
+    const { data } = await api.post<ILoginResponse>(
+        `/auth/Login-hamroh?hamrohId=${userId}`,
+        {},
+        {
+            headers: {
+                Accept: "application/json",
+                Authorization: "Basic aG9kaW1hZG1pbnVpOkhvZGltQWRtaW4xMjNA",
+            },
+            // withCredentials: true,
+        }
+    );
+    return data
+};
+
+export const getMe = async (token?: string) => {
+  const { data } = await api.get<IUserResponse>("/client/me", {
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  });
+  return data;
+};
+
