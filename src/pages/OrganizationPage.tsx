@@ -19,6 +19,8 @@ import { getRoles } from "@/requests/Client/ClientReqeusts";
 import CameraCapture from "@/components/ui/Camera";
 import { WorkTimeStatus } from "@/types/workTime";
 import { arriveAndDeparture } from "@/requests/Auth/AuthReqeusts";
+import { useUserAvatar } from "@/hooks/useUserAvatar";
+import Avatar from "@/components/ui/Avatar";
 
 
 const OrganizationPage: React.FC = () => {
@@ -30,6 +32,7 @@ const OrganizationPage: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [workTimeStatus, setWorkTimeStatus] = useState<WorkTimeStatus | undefined>()
     const [workTimeId, setWorkTimeId] = useState<number | undefined>()
+    const { data: myAvatar } = useUserAvatar();
 
 
     React.useEffect(() => {
@@ -41,16 +44,16 @@ const OrganizationPage: React.FC = () => {
     const parsedOrgId = orgId ? Number(orgId) : undefined
     const organizationId = Number.isFinite(parsedOrgId) ? (parsedOrgId as number) : undefined
 
-    const [myAvatarUrl, setMyAvatarUrl] = useState<string | undefined>();
-    useEffect(() => {
-        let ignore = false;
-        (async () => {
-            if (!accessToken) return;
-            const url = await getMyAvatarUrl(accessToken);
-            if (!ignore) setMyAvatarUrl(url ?? undefined);
-        })();
-        return () => { ignore = true; };
-    }, [accessToken]);
+    // const [myAvatarUrl, setMyAvatarUrl] = useState<string | undefined>();
+    // useEffect(() => {
+    //     let ignore = false;
+    //     (async () => {
+    //         if (!accessToken) return;
+    //         const url = await getMyAvatarUrl(accessToken);
+    //         if (!ignore) setMyAvatarUrl(url ?? undefined);
+    //     })();
+    //     return () => { ignore = true; };
+    // }, [accessToken]);
 
     const queryClient = useQueryClient()
     const mutation = useMutation({
@@ -195,10 +198,20 @@ const OrganizationPage: React.FC = () => {
         <Card className="home-card w-full max-w-[520px] h-full rounded-3xl shadow-2xl border-none overflow-hidden flex flex-col justify-between">
             <SelectOrganizationPopup />
 
-            <div className="home-card-top shrink-0 p-2 flex flex-col">
+            <div className="home-card-top shrink-0 p-3 flex flex-col">
                 <Header
                     avatarSrc={organization?.avatar || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTA75MqsVqzyE7GY65mw8TxzuRmEhSZHBG0Yz4RqnOu6nLYU2wr1xSPHtImuznevPqxKHI&usqp=CAU"}
-                    avatarRightSrc={myAvatarUrl || "/img/avatar-fallback.png"}
+                    // avatarRightSrc={myAvatarUrl || "/img/avatar-fallback.png"}
+                    avatarRightSrc={
+                        <Avatar
+                            src={myAvatar}
+                            backup={null}
+                            alt="Avatar"
+                            size={40}
+                            className="cursor-pointer"
+                        />
+                    }
+
                     name={organization?.name || "Загрузка..."}
                     branch={organization?.address || "Адрес не указан"}
                 />

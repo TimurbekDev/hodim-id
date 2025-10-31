@@ -2,9 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import type { IUserResponse } from "@/types/me";
 import InfoBanner from "./InfoBanner";
 import { useAuth } from "@/hooks/useAuth";
-import editPhoto from "@/assets/icons/edit-button.svg";
+import editPhoto from "@/assets/icons/camera.svg";
 import { getMyAvatarUrl, uploadAvatar } from "@/requests/Client/ClientReqeusts";
-// import avatarFallback from "@/assets/avatar-fallback.png"; // (Option B) use imported asset
+import { useQuery } from "@tanstack/react-query";
+import Avatar from "@/components/ui/Avatar";
 
 type Props = {
   me: IUserResponse;
@@ -24,9 +25,16 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
   const pinfl = me.pinfl ?? "—";
 
   const { accessToken } = useAuth();
-  const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
+  const [, setAvatarUrl] = useState<string | undefined>();
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const { data: myAvatar } = useQuery({
+    queryKey: ["my-avatar-url", !!accessToken],
+    enabled: !!accessToken,
+    staleTime: 60_000,
+    queryFn: () => getMyAvatarUrl(accessToken!),
+  });
 
   // Fetch existing avatar URL
   const ran = useRef(false);
@@ -47,7 +55,7 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
 
 
   // Upload avatar
-  // Upload avatar
+
   const handleFileChange = async (ev: React.ChangeEvent<HTMLInputElement>) => {
     const file = ev.target.files?.[0];
     if (!file || !accessToken) return;
@@ -57,9 +65,6 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
     try {
       const blobUrl = URL.createObjectURL(file);
       setAvatarUrl(blobUrl);
-      // keep a revoker around
-      // NOTE: we'll revoke after we swap to the fresh presigned url
-      // (can't call URL.revokeObjectURL immediately)
       (revoke as any) = () => URL.revokeObjectURL(blobUrl);
     } catch { }
 
@@ -100,19 +105,18 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
 
   const openFileDialog = () => fileInputRef.current?.click();
 
-  const avatar =
-    avatarUrl ??
-    (me.image_url?.startsWith("http") ? me.image_url : "/img/avatar-fallback.png"); // or avatarFallback
 
   return (
     <div className="w-full">
       {/* Avatar */}
       <div className="mt-4 mb-4 flex justify-center">
         <div className="relative w-24 h-24">
-          <img
-            src={avatar}
-            alt={fullName}
-            className={`w-24 h-24 rounded-full object-cover border transition-opacity ${uploading ? "opacity-60" : "opacity-100"}`}
+
+          <Avatar
+            src={myAvatar}
+            backup={me?.image_url}
+            alt={me?.full_name}
+            size={96}
           />
 
           {/* Overlay button */}
@@ -121,14 +125,17 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
             onClick={openFileDialog}
             disabled={uploading}
             aria-label="Изменить фото"
-            className={`absolute -bottom-1 -right-1 bg-white rounded-full shadow w-8 h-8 flex items-center justify-center border border-black/10 ${uploading ? "opacity-60 cursor-not-allowed" : ""
-              }`}
+            className={`absolute -bottom-1 -right-1 bg-white rounded-full shadow w-9 h-9 flex items-center justify-center border border-black/10 ${uploading ? "opacity-60 cursor-not-allowed" : ""}`}
           >
-            <span
-              className="block w-8 h-8 bg-center bg-no-repeat bg-cover"
-              style={{ backgroundImage: `url(${editPhoto})` }}
+            <img
+              src={editPhoto}
+              alt=""
+              aria-hidden="true"
+              className="w-6.3 h-6.3"
+              draggable={false}
             />
           </button>
+
 
           {/* Hidden file input */}
           <input
@@ -152,7 +159,7 @@ const ProfileForm: React.FC<Props> = ({ me, onShowExamples }) => {
         <Field label="Должность" value={position} />
         <Field label="ПИНФЛ" value={pinfl} />
       </div>
-    </div>
+    </div >
   );
 };
 

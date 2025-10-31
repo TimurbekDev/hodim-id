@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 
-import backIcon from "@/assets/icons/icon-navbar (1).svg"; // your arrow-left icon
+import backIcon from "@/assets/icons/icon-navbar (1).svg"; 
 
 
 const ProfilePage = () => {

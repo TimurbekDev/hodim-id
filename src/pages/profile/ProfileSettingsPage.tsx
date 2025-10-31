@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { getCurrentUserBillingPlan } from "@/requests/Billing/billing";
 import type { CurrentPlan } from "@/requests/Billing/billing";
 import { getMyAvatarUrl } from "@/requests/Client/ClientReqeusts";
+import Avatar from "@/components/ui/Avatar";
 
 import backIcon from "@/assets/icons/icon-navbar.svg";
 import chevronRight from "@/assets/icons/Chevron.svg";
@@ -121,6 +122,7 @@ export default function ProfileSettingsPage() {
     });
 
 
+
     const userId = me?.id;
     // local UI state (you likely have a theme/lang store—these are placeholders)
     const [dark, setDark] = useState(false);
@@ -168,10 +170,11 @@ export default function ProfileSettingsPage() {
             {/* Top: avatar + name + link */}
             <div className="px-4 sm:px-5">
                 <div className="flex items-center gap-3">
-                    <img
-                        src={avatar}
-                        alt={fullName}
-                        className="w-12 h-12 rounded-full object-cover border"
+                    <Avatar
+                        src={myAvatar}
+                        backup={me?.image_url}
+                        alt={me?.full_name ?? "Avatar"}
+                        size={96}
                     />
                     <div className="flex flex-col">
                         <div className="text-[16px] font-medium text-gray-900">

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   avatarSrc?: string;
-  avatarRightSrc?: string;
+  avatarRightSrc?: string | React.ReactNode;
   name?: string;
   branch?: string;
 }
@@ -31,8 +31,19 @@ const Header: React.FC<HeaderProps> = ({ avatarSrc, avatarRightSrc, name, branch
       </div>
 
       {avatarRightSrc && (
-        <Avatar onClick={()=> navigate("/profile/15") } size={{ xs: 33, sm: 38 }} src={avatarRightSrc} />
+        <div
+          className="cursor-pointer"
+          onClick={() => navigate("/profile/15")}
+        >
+          {typeof avatarRightSrc === "string" ? (
+            <Avatar size={{ xs: 33, sm: 38 }} src={avatarRightSrc} />
+          ) : (
+            avatarRightSrc
+          )}
+        </div>
       )}
+
+
     </div>
   );
 };
