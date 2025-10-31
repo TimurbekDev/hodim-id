@@ -261,6 +261,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
                             percent={Math.round(progressSegments.percent)} 
                             showInfo={false} 
                             strokeLinecap="round"
+                            size={[330, 12]}
                             strokeColor={progressSegments.strokeColor}
                             trailColor="#f0f0f0"
                         />

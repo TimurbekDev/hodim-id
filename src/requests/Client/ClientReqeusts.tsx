@@ -1,5 +1,5 @@
 import { api } from "@/api"
-import type { ClientResponse } from "@/types/client"
+import type { ClientResponse, ClientView, ClientViewResponse, EgovClientResponse, OrgClientView } from "@/types/client"
 import type { Discipline } from "@/types/discipline"
 import type { IOrganizationClient } from "@/types/org-client"
 import { getHeaderToken } from "@/utils/getHeaderToken"
@@ -7,6 +7,41 @@ import { getHeaderToken } from "@/utils/getHeaderToken"
 type IProps = {
     organizationId: number
     token: string
+}
+
+type IEgovClientProps = {
+    token: string
+    pinfl: string
+}
+
+interface CraateClientProps {
+    token: string
+    payload: ClientView
+}
+
+interface CreateOrgClientProps {
+    token: string
+    payload: OrgClientView
+}
+
+export const createOrgClient = async ({token, payload}: CreateOrgClientProps) => {
+    const { data } = await api.post(`/organization/member`, payload,{
+        headers:{
+            ...getHeaderToken(token)
+        }
+    }) 
+
+    return data
+}
+
+export const createClient = async ({ token, payload }: CraateClientProps): Promise<ClientViewResponse> => {
+  const { data } = await api.post<ClientViewResponse>("/client", payload, {
+    headers: {
+      ...getHeaderToken(token),
+    },
+  })
+
+  return data
 }
 
 export const getClients = async ({organizationId, token}: IProps) => {
@@ -54,3 +89,11 @@ export const getRoles = async ({token , organizationId}:IProps) => {
     })
     return data
 }
+
+export const getUserInfo = async ({ token, pinfl }: IEgovClientProps) => {
+    const { data } = await api.get<EgovClientResponse>(`/client/by-pinfl?pinfl=${pinfl}`,
+        {headers:{...getHeaderToken(token)}}
+    )
+
+    return data;
+};

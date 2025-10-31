@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, List, Avatar, Typography, Radio, Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { usePopups } from "../../../store/usePopups";
@@ -22,6 +22,13 @@ const SelectOrganizationPopup: React.FC = () => {
         queryFn: async () => await getOrganizations(accessToken as string),
         enabled: !!accessToken,
     })
+
+    useEffect(()=>{
+        if(organizations.length == 1){
+            navigate(`/organization/${organizations[0].id}`)
+            setActivePopup()
+        }
+    },[organizations])
 
     React.useEffect(() => {
         if (visible) {

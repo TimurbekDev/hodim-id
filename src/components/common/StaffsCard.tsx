@@ -20,6 +20,8 @@ const StaffsCard = ({organizationId}:{organizationId:number}) =>{
         enabled: !!accessToken,
     })
 
+    console.log(clients)
+
    return (
         <Card className="!border-0">
             <div className="flex flex-col gap-4 !border-1 border-gray-100 rounded-3xl w-full h-full p-4">
@@ -42,10 +44,10 @@ const StaffsCard = ({organizationId}:{organizationId:number}) =>{
                             alt={item.full_name}
                             className="w-12 h-12 rounded-full object-cover"
                         />
-                        <span className="text-sm font-medium">{item.full_name}</span>
+                        <span className="text-sm font-medium block max-w-[150px] truncate">{item.full_name}</span>
                     </div>
                     <div className='flex flex-row items-center gap-2'>
-                        <p className='font-medium text-sm'>Опоздание</p>
+                        <p className='font-medium text-sm'>{item.status}</p>
                         <div className='w-2.5 h-2.5 rounded-full bg-yellow-400'></div>
                     </div>
                 </List.Item>
