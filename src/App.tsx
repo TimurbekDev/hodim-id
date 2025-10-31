@@ -8,6 +8,7 @@ import ClientPage from "./pages/Client/ClientPage";
 import ProfileSettingsPage from "./pages/profile/ProfileSettingsPage";
 import BillingPage from "./pages/billing/BillingPage";
 import ClientDetailPage from "@/pages/Client/ClientDetailPage";
+import AddClientPage from "./pages/Client/AddClientPage";
 function App() {
   return (
     <AppProvider>
@@ -48,6 +49,11 @@ function App() {
             element={<ProtectedRoutes component={<ClientDetailPage />} />} 
           />
 
+          <Route 
+            path='/organization/:orgId/clients/create'
+            element={<ProtectedRoutes component={< AddClientPage/> }/> }
+          />
+          
           <Route path="/login" element={<LoginPage />} />
           <Route path="/error" element={<ErrorPage />} />
         </Routes>
